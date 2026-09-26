@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitRoutine — Jouw persoonlijke routine</title>
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #141b2d;
+      --card2: #1b243a;
+      --text: #f4f7fb;
+      --muted: #9da9bd;
+      --accent: #65e6a5;
+      --accent2: #52b8ff;
+      --danger: #ff6b7a;
+      --border: rgba(255,255,255,.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top right, #17304a 0, var(--bg) 40%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1050px, 92%);
+      margin: auto;
+    }
+
+    header {
+      padding: 42px 0 24px;
+    }
+
+    .brand {
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 1;
+      margin: 12px 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding-bottom: 50px;
+    }
+
+    .card {
+      background: rgba(20,27,45,.88);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 15px 45px rgba(0,0,0,.18);
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 7px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: #0e1526;
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent2);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: .95rem;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #07150e;
+    }
+
+    .secondary {
+      background: var(--card2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .routine-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(101,230,165,.12);
+      color: var(--accent);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: .8rem;
+      font-weight: 800;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .day {
+      background: var(--card2);
+      border-radius: 16px;
+      padding: 17px;
+      border: 1px solid var(--border);
+    }
+
+    .day h3 {
+      margin: 0 0 13px;
+    }
+
+    .day.rest {
+      opacity: .78;
+    }
+
+    .exercise {
+      padding: 11px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .exercise:first-of-type {
+      border-top: 0;
+    }
+
+    .exercise strong {
+      display: block;
+    }
+
+    .sets {
+      color: var(--accent2);
+      font-size: .88rem;
+      margin-top: 3px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.5;
+      margin-top: 5px;
+    }
+
+    .tip {
+      margin-top: 16px;
+      padding: 13px;
+      border-radius: 12px;
+      background: rgba(82,184,255,.08);
+      color: #cfeeff;
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: .8rem;
+      padding: 0 0 35px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 720px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .exercise-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <div class="brand">FitRoutine</div>
+
+      <h1>Maak jouw eigen trainingsroutine.</h1>
+
+      <p class="subtitle">
+        Vul je huidige maxima in. FitRoutine gebruikt die gegevens om een eenvoudige
+        routine met sets en herhalingen voor je samen te stellen.
+      </p>
+    </header>
+
+    <main class="grid">
+
+      <section class="card">
+        <h2>Jouw maxima</h2>
+
+        <div class="exercise-grid">
+
+          <div>
+            <label for="pushups">Push-ups (max)</label>
+            <input id="pushups" type="number" min="1" max="500" value="20">
+          </div>
+
+          <div>
+            <label for="pullups">Pull-ups (max)</label>
+            <input id="pullups" type="number" min="1" max="100" value="5">
+          </div>
+
+          <div>
+            <label for="squats">Squats (max)</label>
+            <input id="squats" type="number" min="1" max="500" value="30">
+          </div>
+
+          <div>
+            <label for="situps">Sit-ups (max)</label>
+            <input id="situps" type="number" min="1" max="500" value="25">
+          </div>
+
+          <div>
+            <label for="plank">Plank (seconden)</label>
+            <input id="plank" type="number" min="10" max="600" value="60">
+          </div>
+
+        </div>
+      </section>
+
+      <section class="card">
+
+        <h2>Je schema</h2>
+
+        <label for="days">Dagen per week</label>
+
+        <select id="days">
+          <option value="2">2 dagen</option>
+          <option value="3" selected>3 dagen</option>
+          <option value="4">4 dagen</option>
+          <option value="5">5 dagen</option>
+        </select>
+
+        <label for="level" style="margin-top:16px">
+          Niveau
+        </label>
+
+        <select id="level">
+          <option value="easy">Rustig opbouwen</option>
+          <option value="normal" selected>Normaal</option>
+          <option value="hard">Uitdagender</option>
+        </select>
+
+        <div class="actions">
+          <button class="primary" onclick="generateRoutine()">
+            Genereer routine
+          </button>
+
+          <button class="secondary" onclick="resetForm()">
+            Reset
+          </button>
+        </div>
+
+      </section>
+
+      <section id="result" class="card full hidden">
+
+        <div class="routine-head">
+
+          <div>
+            <h2 style="margin-bottom:5px">
+              Jouw routine
+            </h2>
+
+            <div id="summary" class="note"></div>
+          </div>
+
+          <span class="badge">
+            Automatisch gegenereerd
+          </span>
+
+        </div>
+
+        <div id="daysContainer" class="days"></div>
+
+        <div class="tip">
+          <strong>Tip:</strong>
+          Stop als een oefening pijn veroorzaakt. Goede techniek en herstel
+          zijn belangrijker dan zoveel mogelijk herhalingen doen.
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer>
+      FitRoutine maakt een algemene trainingssuggestie en vervangt geen persoonlijk advies van
+      een gekwalificeerde trainer of zorgprofessional.
+    </footer>
+
+  </div>
+
+  <script>
+
+    const exercises = {
+      pushups: {
+        name: "Push-ups",
+        unit: "herhalingen"
+      },
+
+      pullups: {
+        name: "Pull-ups",
+        unit: "herhalingen"
+      },
+
+      squats: {
+        name: "Squats",
+        unit: "herhalingen"
+      },
+
+      situps: {
+        name: "Sit-ups",
+        unit: "herhalingen"
+      },
+
+      plank: {
+        name: "Plank",
+        unit: "seconden"
+      }
+    };
+
+
+    function value(id) {
+      return Math.max(
+        1,
+        Number(document.getElementById(id).value) || 1
+      );
+    }
+
+
+    function reps(max, level) {
+
+      const factor = {
+        easy: 0.45,
+        normal: 0.60,
+        hard: 0.70
+      }[level];
+
+      return Math.max(
+        1,
+        Math.floor(max * factor)
+      );
+    }
+
+
+    function sets(level) {
+
+      return {
+        easy: 2,
+        normal: 3,
+        hard: 3
+      }[level];
+
+    }
+
+
+    function item(key, max, level) {
+
+      const s = sets(level);
+      const r = reps(max, level);
+
+      if (key === "plank") {
+
+        return {
+          name: exercises[key].name,
+          detail: `${s} × ${r} sec`,
+          note: "Rust 60–90 sec tussen sets."
+        };
+
+      }
+
+      return {
+        name: exercises[key].name,
+        detail: `${s} × ${r}`,
+        note: "Rust 60–120 sec tussen sets."
+      };
+
+    }
+
+
+    function generateRoutine() {
+
+      const max = {
+
+        pushups: value("pushups"),
+        pullups: value("pullups"),
+        squats: value("squats"),
+        situps: value("situps"),
+        plank: value("plank")
+
+      };
+
+
+      const dayCount =
+        Number(document.getElementById("days").value);
+
+      const level =
+        document.getElementById("level").value;
+
+
+      const templates = [
+
+        [
+
+          [
+            "Push",
+            [
+              item("pushups", max.pushups, level),
+              item("situps", max.situps, level)
+            ]
+          ],
+
+          [
+            "Pull + benen",
+            [
+              item("pullups", max.pullups, level),
+              item("squats", max.squats, level)
+            ]
+          ],
+
+          [
+            "Full body",
+            [
+              item("pushups", max.pushups, level),
+              item("pullups", max.pullups, level),
+              item("plank", max.plank, level)
+            ]
+          ]
+
+        ],
+
+        [
+
+          [
+            "Push + core",
+            [
+              item("pushups", max.pushups, level),
+              item("situps", max.situps, level),
+              item("plank", max.plank, level)
+            ]
+          ],
+
+          [
+            "Benen + pull",
+            [
+              item("squats", max.squats, level),
+              item("pullups", max.pullups, level)
+            ]
+          ],
+
+          [
+            "Full body",
+            [
+              item("pushups", max.pushups, level),
+              item("squats", max.squats, level),
+              item("pullups", max.pullups, level)
+            ]
+          ],
+
+          [
+            "Core + bovenlichaam",
+            [
+              item("situps", max.situps, level),
+              item("plank", max.plank, level),
+              item("pushups", max.pushups, level)
+            ]
+          ],
+
+          [
+            "Full body",
+            [
+              item("squats", max.squats, level),
+              item("pushups", max.pushups, level),
+              item("pullups", max.pullups, level)
+            ]
+          ]
+
+        ]
+
+      ];
+
+
+      const names = [
+        "Maandag",
+        "Dinsdag",
+        "Woensdag",
+        "Donderdag",
+        "Vrijdag"
+      ];
+
+
+      let plan = [];
+
+
+      if (dayCount === 2) {
+
+        plan = [
+          templates[0][0],
+          templates[0][2]
+        ];
+
+      } else if (dayCount === 3) {
+
+        plan = templates[0];
+
+      } else {
+
+        plan = templates[1].slice(0, dayCount);
+
+      }
+
+
+      const container =
+        document.getElementById("daysContainer");
+
+      container.innerHTML = "";
+
+
+      plan.forEach((day, i) => {
+
+        const el = document.createElement("div");
+
+        el.className = "day";
+
+
+        let html =
+          `<h3>${names[i]} · ${day[0]}</h3>`;
+
+
+        day[1].forEach(ex => {
+
+          html += `
+            <div class="exercise">
+              <strong>${ex.name}</strong>
+              <div class="sets">${ex.detail}</div>
+              <div class="note">${ex.note}</div>
+            </div>
+          `;
+
+        });
+
+
+        el.innerHTML = html;
+
+        container.appendChild(el);
+
+      });
+
+
+      const restCount = 7 - dayCount;
+
+
+      document.getElementById("summary").textContent =
+        `${dayCount} trainingsdagen en ongeveer ${restCount} dagen zonder geplande training.`;
+
+
+      document
+        .getElementById("result")
+        .classList
+        .remove("hidden");
+
+
+      document
+        .getElementById("result")
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+
+      localStorage.setItem(
+        "fitroutine",
+        JSON.stringify({
+          max,
+          dayCount,
+          level
+        })
+      );
+
+    }
+
+
+    function resetForm() {
+
+      document.getElementById("pushups").value = 20;
+      document.getElementById("pullups").value = 5;
+      document.getElementById("squats").value = 30;
+      document.getElementById("situps").value = 25;
+      document.getElementById("plank").value = 60;
+
+      document.getElementById("days").value = 3;
+      document.getElementById("level").value = "normal";
+
+      document
+        .getElementById("result")
+        .classList
+        .add("hidden");
+
+      localStorage.removeItem("fitroutine");
+
+    }
+
+
+    window.addEventListener("DOMContentLoaded", () => {
+
+      try {
+
+        const saved =
+          JSON.parse(
+            localStorage.getItem("fitroutine")
+          );
+
+
+        if (!saved) return;
+
+
+        Object.entries(saved.max).forEach(
+          ([key, val]) => {
+
+            document.getElementById(key).value = val;
+
+          }
+        );
+
+
+        document.getElementById("days").value =
+          saved.dayCount;
+
+
+        document.getElementById("level").value =
+          saved.level;
+
+
+        generateRoutine();
+
+      } catch (error) {
+
+        console.log("Geen opgeslagen gegevens gevonden.");
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
