@@ -2,893 +2,1391 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Open World Adventure</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>MyPhone</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,sans-serif;
+    background:#111;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    overflow:hidden;
 }
-
-body {
-    overflow: hidden;
-    background: #111;
-    font-family: Arial, sans-serif;
-    user-select: none;
+.phone{
+    width:390px;
+    height:820px;
+    max-width:100vw;
+    max-height:100vh;
+    background:#111;
+    border:8px solid #222;
+    border-radius:38px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 0 40px #000;
 }
-
-canvas {
-    display: block;
-    background: #6dbb58;
+.screen{
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg,#172554,#581c87);
+    color:white;
+    position:relative;
 }
-
-/* HUD */
-#hud {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 10;
-    color: white;
-    background: rgba(0,0,0,.65);
-    padding: 12px 15px;
-    border-radius: 12px;
-    min-width: 190px;
-    backdrop-filter: blur(5px);
+.status{
+    position:absolute;
+    top:8px;
+    left:15px;
+    right:15px;
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    z-index:50;
 }
-
-.stat {
-    margin: 5px 0;
+.status span{margin-left:5px}
+.page{
+    position:absolute;
+    inset:0;
+    padding-top:38px;
+    display:none;
 }
-
-.bar {
-    width: 150px;
-    height: 8px;
-    background: #333;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 3px;
+.page.active{display:block}
+.lock{
+    position:absolute;
+    inset:0;
+    z-index:100;
+    background:linear-gradient(160deg,#020617,#312e81);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:90px;
 }
-
-#healthBar {
-    height: 100%;
-    width: 100%;
-    background: #ff4d4d;
+.lock h1{font-size:60px}
+.lock .date{font-size:18px;margin-top:5px}
+.pinDots{
+    display:flex;
+    gap:10px;
+    margin:35px 0 20px;
 }
-
-#energyBar {
-    height: 100%;
-    width: 100%;
-    background: #4db8ff;
+.dot{
+    width:13px;
+    height:13px;
+    border:2px solid white;
+    border-radius:50%;
 }
-
-/* Quest */
-#quest {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 10;
-    background: rgba(0,0,0,.65);
-    color: white;
-    padding: 15px;
-    border-radius: 12px;
-    width: 230px;
+.dot.on{background:white}
+.pinPad{
+    display:grid;
+    grid-template-columns:repeat(3,70px);
+    gap:12px;
 }
-
-#quest h3 {
-    margin-bottom: 8px;
+.pinBtn{
+    width:70px;
+    height:55px;
+    border:0;
+    border-radius:16px;
+    background:#ffffff22;
+    color:white;
+    font-size:20px;
 }
-
-/* Interaction */
-#interaction {
-    position: fixed;
-    bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    background: rgba(0,0,0,.8);
-    color: white;
-    padding: 12px 22px;
-    border-radius: 12px;
-    display: none;
+.pinBtn:active{background:#ffffff44}
+.home{
+    padding:55px 18px 80px;
 }
-
-/* Dialogue */
-#dialogue {
-    position: fixed;
-    left: 50%;
-    bottom: 80px;
-    transform: translateX(-50%);
-    width: min(600px, 90%);
-    background: rgba(0,0,0,.92);
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
-    z-index: 30;
-    display: none;
+.bigClock{
+    text-align:center;
+    font-size:48px;
+    font-weight:bold;
+    margin-bottom:8px;
 }
-
-#dialogueName {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
+.homeDate{text-align:center;color:#ddd;margin-bottom:25px}
+.apps{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px 12px;
 }
-
-#dialogueText {
-    line-height: 1.5;
-    margin-bottom: 15px;
+.app{
+    text-align:center;
+    cursor:pointer;
 }
-
-button {
-    border: none;
-    padding: 10px 16px;
-    border-radius: 9px;
-    cursor: pointer;
-    background: white;
-    color: black;
-    font-weight: bold;
+.icon{
+    width:62px;
+    height:62px;
+    margin:auto;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    background:#ffffff22;
+    backdrop-filter:blur(10px);
 }
-
-button:hover {
-    opacity: .8;
+.app small{display:block;margin-top:5px;font-size:11px}
+.bottom{
+    position:absolute;
+    bottom:12px;
+    left:15px;
+    right:15px;
+    height:62px;
+    border-radius:25px;
+    background:#ffffff20;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
 }
-
-/* Start screen */
-#startScreen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #111, #263238);
-    color: white;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.bottom div{font-size:25px;cursor:pointer}
+.header{
+    height:58px;
+    padding:10px 15px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background:#00000025;
 }
-
-.startBox {
-    width: min(500px, 90%);
+.back{
+    font-size:25px;
+    cursor:pointer;
 }
-
-.startBox h1 {
-    font-size: 45px;
-    margin-bottom: 15px;
+.header h2{font-size:20px}
+.content{padding:15px;height:calc(100% - 58px);overflow:auto}
+.card{
+    background:#ffffff16;
+    border:1px solid #ffffff18;
+    border-radius:17px;
+    padding:15px;
+    margin-bottom:12px;
 }
-
-.startBox p {
-    color: #bbb;
-    margin-bottom: 25px;
+input,textarea,select{
+    width:100%;
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    margin:5px 0 10px;
+    background:#ffffff18;
+    color:inherit;
+    outline:none;
 }
-
-#nameInput {
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    border: none;
-    margin-bottom: 12px;
-    font-size: 16px;
+textarea{height:350px;resize:none}
+button{
+    padding:11px 15px;
+    border:0;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
 }
-
-#startButton {
-    width: 100%;
-    background: #4caf50;
-    color: white;
+.primary{background:#6366f1;color:white}
+.danger{background:#ef4444;color:white}
+.message{
+    padding:12px;
+    border-radius:15px;
+    background:#ffffff15;
+    margin-bottom:8px;
 }
-
-/* Mobile controls */
-#mobileControls {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 15;
+.message.me{background:#4f46e5;margin-left:40px}
+.contact{
+    padding:15px;
+    background:#ffffff12;
+    border-radius:15px;
+    margin-bottom:8px;
+    cursor:pointer;
 }
-
-.controlRow {
-    display: flex;
-    justify-content: center;
+.calc{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
 }
-
-.control {
-    width: 55px;
-    height: 55px;
-    margin: 3px;
-    border-radius: 12px;
-    background: rgba(0,0,0,.55);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
+.calcDisplay{
+    width:100%;
+    height:70px;
+    text-align:right;
+    font-size:30px;
+    padding:10px;
+    background:#00000035;
+    border-radius:12px;
+    margin-bottom:10px;
 }
-
-@media (max-width: 700px) {
-    #mobileControls {
-        display: block;
-    }
-
-    #quest {
-        width: 180px;
-        font-size: 12px;
-    }
-
-    #hud {
-        font-size: 12px;
-        min-width: 150px;
-    }
-
-    .startBox h1 {
-        font-size: 32px;
-    }
+.calc button{height:55px;font-size:18px}
+.stopwatch{text-align:center;padding-top:60px}
+.stopwatch .time{
+    font-size:55px;
+    font-family:monospace;
+    margin-bottom:30px;
+}
+.music{text-align:center;padding-top:40px}
+.album{
+    width:210px;
+    height:210px;
+    margin:auto;
+    border-radius:25px;
+    background:linear-gradient(135deg,#f97316,#7c3aed);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:80px;
+}
+.music h2{margin-top:25px}
+.music p{color:#bbb;margin:8px}
+.playerBtns{display:flex;justify-content:center;gap:15px;margin-top:25px}
+.playerBtns button{font-size:25px}
+.camera{
+    height:100%;
+    background:#020617;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:60px 20px 40px;
+    text-align:center;
+}
+.cameraView{
+    flex:1;
+    margin:15px 0;
+    border-radius:20px;
+    border:2px solid #555;
+    background:
+      radial-gradient(circle at 50% 45%,#64748b 0 5%,transparent 6%),
+      linear-gradient(135deg,#111827,#334155);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+}
+.shutter{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:6px solid white;
+    background:#ddd;
+    margin:auto;
+}
+.browserBar{
+    display:flex;
+    gap:5px;
+}
+.browserBar input{margin:0}
+.setting{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 0;
+    border-bottom:1px solid #ffffff18;
+}
+.toggle{
+    width:50px;
+    height:28px;
+    background:#555;
+    border-radius:20px;
+    padding:3px;
+}
+.toggle span{
+    display:block;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:white;
+}
+.toggle.on{background:#4f46e5}
+.toggle.on span{margin-left:22px}
+.dark .screen{
+    background:#080808;
+}
+.notification{
+    position:absolute;
+    top:45px;
+    left:15px;
+    right:15px;
+    background:#222e;
+    padding:13px;
+    border-radius:15px;
+    z-index:90;
+    display:none;
 }
 </style>
 </head>
 
 <body>
 
-<div id="startScreen">
-    <div class="startBox">
-        <h1>🌍 Open World</h1>
-        <p>Verken de wereld, praat met NPC's en voltooi quests.</p>
+<div class="phone">
+<div class="screen">
 
-        <input
-            id="nameInput"
-            placeholder="Jouw naam..."
-            maxlength="20"
-        >
+<div class="status">
+    <b id="statusTime">12:00</b>
+    <div>📶 <span>WiFi</span> 🔋<span id="battery">100</span>%</div>
+</div>
 
-        <button id="startButton">START GAME</button>
+<div id="notification" class="notification"></div>
+
+<!-- LOCKSCREEN -->
+<div id="lock" class="lock">
+    <h1>🔒</h1>
+    <div id="lockTime" style="font-size:50px">12:00</div>
+    <div class="date" id="lockDate"></div>
+
+    <div class="pinDots">
+        <div class="dot" id="d1"></div>
+        <div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div>
+        <div class="dot" id="d4"></div>
+    </div>
+
+    <div class="pinPad">
+        <button class="pinBtn" onclick="pin(1)">1</button>
+        <button class="pinBtn" onclick="pin(2)">2</button>
+        <button class="pinBtn" onclick="pin(3)">3</button>
+        <button class="pinBtn" onclick="pin(4)">4</button>
+        <button class="pinBtn" onclick="pin(5)">5</button>
+        <button class="pinBtn" onclick="pin(6)">6</button>
+        <button class="pinBtn" onclick="pin(7)">7</button>
+        <button class="pinBtn" onclick="pin(8)">8</button>
+        <button class="pinBtn" onclick="pin(9)">9</button>
+        <button class="pinBtn" onclick="clearPin()">⌫</button>
+        <button class="pinBtn" onclick="pin(0)">0</button>
+        <button class="pinBtn" onclick="unlock()">✓</button>
+    </div>
+
+    <p style="margin-top:15px;color:#aaa;font-size:12px">
+        Standaard PIN: 1234
+    </p>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page active">
+<div class="home">
+    <div class="bigClock" id="homeClock">12:00</div>
+    <div class="homeDate" id="homeDate"></div>
+
+    <div class="apps">
+        <div class="app" onclick="openPage('messages')">
+            <div class="icon">💬</div><small>Berichten</small>
+        </div>
+
+        <div class="app" onclick="openPage('phone')">
+            <div class="icon">📞</div><small>Telefoon</small>
+        </div>
+
+        <div class="app" onclick="openPage('notes')">
+            <div class="icon">📝</div><small>Notities</small>
+        </div>
+
+        <div class="app" onclick="openPage('calculator')">
+            <div class="icon">🧮</div><small>Rekenmachine</small>
+        </div>
+
+        <div class="app" onclick="openPage('music')">
+            <div class="icon">🎵</div><small>Muziek</small>
+        </div>
+
+        <div class="app" onclick="openPage('weather')">
+            <div class="icon">🌤️</div><small>Weer</small>
+        </div>
+
+        <div class="app" onclick="openPage('camera')">
+            <div class="icon">📷</div><small>Camera</small>
+        </div>
+
+        <div class="app" onclick="openPage('gallery')">
+            <div class="icon">🖼️</div><small>Foto's</small>
+        </div>
+
+        <div class="app" onclick="openPage('browser')">
+            <div class="icon">🌐</div><small>Browser</small>
+        </div>
+
+        <div class="app" onclick="openPage('timer')">
+            <div class="icon">⏱️</div><small>Timer</small>
+        </div>
+
+        <div class="app" onclick="openPage('settings')">
+            <div class="icon">⚙️</div><small>Instellingen</small>
+        </div>
+
+        <div class="app" onclick="showNotification('Geen nieuwe notificaties')">
+            <div class="icon">🔔</div><small>Notificaties</small>
+        </div>
     </div>
 </div>
 
-<canvas id="game"></canvas>
-
-<div id="hud">
-    <div>🧍 <span id="playerName">Speler</span></div>
-    <div class="stat">❤️ Health</div>
-    <div class="bar">
-        <div id="healthBar"></div>
-    </div>
-
-    <div class="stat">⚡ Energy</div>
-    <div class="bar">
-        <div id="energyBar"></div>
-    </div>
-
-    <div class="stat">💰 €<span id="money">0</span></div>
-    <div class="stat">⭐ XP <span id="xp">0</span></div>
+<div class="bottom">
+    <div onclick="openPage('phone')">📞</div>
+    <div onclick="openPage('messages')">💬</div>
+    <div onclick="openPage('browser')">🌐</div>
+    <div onclick="openPage('music')">🎵</div>
+</div>
 </div>
 
-<div id="quest">
-    <h3>📜 Quest</h3>
-    <div id="questText">
-        Zoek iemand om mee te praten.
+<!-- MESSAGES -->
+<div id="messages" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>💬 Berichten</h2>
+</div>
+<div class="content">
+    <div id="messagesList"></div>
+
+    <div class="card">
+        <input id="messageInput" placeholder="Typ een bericht...">
+        <button class="primary" onclick="sendMessage()">Versturen</button>
     </div>
 </div>
-
-<div id="interaction">
-    Druk op <b>E</b> om interactie te hebben
 </div>
 
-<div id="dialogue">
-    <div id="dialogueName">NPC</div>
-    <div id="dialogueText"></div>
-    <button id="dialogueButton">Doorgaan</button>
+<!-- PHONE -->
+<div id="phone" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>📞 Telefoon</h2>
+</div>
+<div class="content">
+    <div class="card" style="text-align:center">
+        <h1 id="phoneNumber">Geen nummer</h1>
+        <br>
+        <button class="primary" onclick="callNumber()">📞 Bellen</button>
+    </div>
+
+    <div class="card">
+        <input id="numberInput" placeholder="06 12345678">
+    </div>
+
+    <h3>Recente oproepen</h3>
+    <div id="calls"></div>
+</div>
 </div>
 
-<div id="mobileControls">
-    <div class="controlRow">
-        <div class="control" data-key="w">▲</div>
+<!-- NOTES -->
+<div id="notes" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>📝 Notities</h2>
+</div>
+<div class="content">
+    <input id="noteTitle" placeholder="Titel">
+    <textarea id="noteText" placeholder="Schrijf hier..."></textarea>
+    <button class="primary" onclick="saveNote()">Opslaan</button>
+    <div id="notesList" style="margin-top:15px"></div>
+</div>
+</div>
+
+<!-- CALCULATOR -->
+<div id="calculator" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>🧮 Calculator</h2>
+</div>
+<div class="content">
+    <div id="calcDisplay" class="calcDisplay">0</div>
+
+    <div class="calc">
+        <button onclick="calcClear()">C</button>
+        <button onclick="calcInput('(')">(</button>
+        <button onclick="calcInput(')')">)</button>
+        <button onclick="calcInput('/')">÷</button>
+
+        <button onclick="calcInput('7')">7</button>
+        <button onclick="calcInput('8')">8</button>
+        <button onclick="calcInput('9')">9</button>
+        <button onclick="calcInput('*')">×</button>
+
+        <button onclick="calcInput('4')">4</button>
+        <button onclick="calcInput('5')">5</button>
+        <button onclick="calcInput('6')">6</button>
+        <button onclick="calcInput('-')">−</button>
+
+        <button onclick="calcInput('1')">1</button>
+        <button onclick="calcInput('2')">2</button>
+        <button onclick="calcInput('3')">3</button>
+        <button onclick="calcInput('+')">+</button>
+
+        <button onclick="calcInput('0')">0</button>
+        <button onclick="calcInput('.')">.</button>
+        <button onclick="calcDelete()">⌫</button>
+        <button onclick="calcResult()">=</button>
+    </div>
+</div>
+</div>
+
+<!-- MUSIC -->
+<div id="music" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>🎵 Muziek</h2>
+</div>
+<div class="content music">
+    <div class="album">🎵</div>
+    <h2 id="songName">Demo Song</h2>
+    <p id="songArtist">MyPhone Music</p>
+
+    <input type="range" id="musicProgress" min="0" max="100" value="0">
+
+    <div class="playerBtns">
+        <button onclick="previousSong()">⏮️</button>
+        <button onclick="toggleMusic()" id="playButton">▶️</button>
+        <button onclick="nextSong()">⏭️</button>
+    </div>
+</div>
+</div>
+
+<!-- WEATHER -->
+<div id="weather" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>🌤️ Weer</h2>
+</div>
+<div class="content">
+    <div class="card" style="text-align:center">
+        <div style="font-size:80px">🌤️</div>
+        <h1>18°C</h1>
+        <p>Gedeeltelijk bewolkt</p>
+        <br>
+        <p>💨 Wind: 12 km/u</p>
+        <p>💧 Luchtvochtigheid: 65%</p>
     </div>
 
-    <div class="controlRow">
-        <div class="control" data-key="a">◀</div>
-        <div class="control" data-key="s">▼</div>
-        <div class="control" data-key="d">▶</div>
+    <div class="card">
+        <h3>Komende dagen</h3>
+        <p style="margin-top:15px">🌤️ Morgen — 19°C</p>
+        <p style="margin-top:15px">☀️ Overmorgen — 21°C</p>
+        <p style="margin-top:15px">🌧️ Vrijdag — 16°C</p>
     </div>
+</div>
+</div>
+
+<!-- CAMERA -->
+<div id="camera" class="page">
+<div class="camera">
+    <h2>📷 Camera</h2>
+
+    <div class="cameraView" id="cameraView">
+        📷
+    </div>
+
+    <button class="shutter" onclick="takePhoto()"></button>
+</div>
+</div>
+
+<!-- GALLERY -->
+<div id="gallery" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>🖼️ Foto's</h2>
+</div>
+<div class="content">
+    <div id="galleryList"></div>
+</div>
+</div>
+
+<!-- BROWSER -->
+<div id="browser" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>🌐 Browser</h2>
+</div>
+<div class="content">
+    <div class="browserBar">
+        <input id="browserInput" placeholder="Zoeken...">
+        <button onclick="searchBrowser()">Ga</button>
+    </div>
+
+    <div id="browserResult" class="card">
+        <h2>MyBrowser</h2>
+        <p style="margin-top:10px">
+            Zoek iets om een gesimuleerde webpagina te bekijken.
+        </p>
+    </div>
+</div>
+</div>
+
+<!-- TIMER -->
+<div id="timer" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>⏱️ Timer</h2>
+</div>
+<div class="content stopwatch">
+    <div class="time" id="timerDisplay">00:00:00</div>
+
+    <button class="primary" onclick="startStopwatch()" id="stopwatchButton">
+        Start
+    </button>
+
+    <button onclick="resetStopwatch()">
+        Reset
+    </button>
+
+    <div class="card" style="margin-top:40px">
+        <input id="countdownInput" type="number" placeholder="Aantal seconden">
+        <button class="primary" onclick="startCountdown()">
+            Start countdown
+        </button>
+        <h2 id="countdownDisplay" style="margin-top:20px">0</h2>
+    </div>
+</div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="page">
+<div class="header">
+    <span class="back" onclick="goHome()">‹</span>
+    <h2>⚙️ Instellingen</h2>
+</div>
+
+<div class="content">
+    <div class="card">
+        <div class="setting">
+            <span>🌙 Dark mode</span>
+            <div class="toggle" id="darkToggle" onclick="toggleDark()">
+                <span></span>
+            </div>
+        </div>
+
+        <div class="setting">
+            <span>🔔 Meldingen</span>
+            <button onclick="showNotification('Testmelding 🔔')">
+                Test
+            </button>
+        </div>
+
+        <div class="setting">
+            <span>🔒 PIN wijzigen</span>
+            <button onclick="changePin()">Wijzig</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Profiel</h3>
+        <input id="profileName" placeholder="Naam">
+        <button class="primary" onclick="saveProfile()">
+            Opslaan
+        </button>
+    </div>
+
+    <div class="card">
+        <h3>Opslag</h3>
+        <p id="storageInfo" style="margin:10px 0"></p>
+        <button class="danger" onclick="resetPhone()">
+            Telefoon resetten
+        </button>
+    </div>
+</div>
+</div>
+
+</div>
 </div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+/* ==========================
+   DATA
+========================== */
 
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-window.addEventListener("resize", resize);
-resize();
-
-/* =========================
-   GAME DATA
-========================= */
-
-let player = {
-    x: 1000,
-    y: 1000,
-    size: 28,
-    speed: 3,
-    sprintSpeed: 5,
-    health: 100,
-    energy: 100,
-    money: 0,
-    xp: 0,
-    name: "Speler"
+let data = JSON.parse(localStorage.getItem("myPhone")) || {
+    pin:"1234",
+    name:"Gebruiker",
+    dark:false,
+    notes:[],
+    messages:[
+        {from:"Alex",text:"Hey! 👋"},
+        {from:"Jij",text:"Hey, alles goed?"}
+    ],
+    calls:[],
+    photos:[]
 };
 
-let keys = {};
+let currentPin="";
+let calc="";
+let stopwatchSeconds=0;
+let stopwatchRunning=false;
+let stopwatchInterval=null;
+let countdownInterval=null;
 
-let camera = {
-    x: 0,
-    y: 0
-};
-
-let world = {
-    width: 3000,
-    height: 3000
-};
-
-let quest = {
-    started: false,
-    completed: false,
-    reward: 100
-};
-
-let dialogueOpen = false;
-let currentNPC = null;
-
-/* =========================
-   INPUT
-========================= */
-
-window.addEventListener("keydown", e => {
-    keys[e.key.toLowerCase()] = true;
-
-    if (e.key.toLowerCase() === "e") {
-        interact();
-    }
-
-    if (e.key === "Escape") {
-        closeDialogue();
-    }
-});
-
-window.addEventListener("keyup", e => {
-    keys[e.key.toLowerCase()] = false;
-});
-
-/* Mobile */
-document.querySelectorAll(".control").forEach(button => {
-
-    const key = button.dataset.key;
-
-    button.addEventListener("touchstart", e => {
-        e.preventDefault();
-        keys[key] = true;
-    });
-
-    button.addEventListener("touchend", e => {
-        e.preventDefault();
-        keys[key] = false;
-    });
-});
-
-/* =========================
-   WORLD
-========================= */
-
-const buildings = [
-    {x:300,y:300,w:300,h:220,color:"#d88b68"},
-    {x:850,y:250,w:350,h:250,color:"#8e9cc4"},
-    {x:1500,y:400,w:300,h:250,color:"#c9a56a"},
-    {x:2200,y:300,w:400,h:250,color:"#aa7ac4"},
-    {x:400,y:1700,w:350,h:250,color:"#d86f6f"},
-    {x:1200,y:1600,w:400,h:300,color:"#7c9bca"},
-    {x:2050,y:1800,w:400,h:300,color:"#d29c57"}
+const songs=[
+    "Demo Song",
+    "Night Drive",
+    "Summer",
+    "Adventure"
 ];
 
-const trees = [];
+let songIndex=0;
+let musicPlaying=false;
+let musicInterval=null;
+let musicProgress=0;
 
-for (let i = 0; i < 100; i++) {
+/* ==========================
+   SAVE
+========================== */
 
-    trees.push({
-        x: Math.random() * world.width,
-        y: Math.random() * world.height,
-        size: 20 + Math.random() * 20
+function save(){
+    localStorage.setItem("myPhone",JSON.stringify(data));
+    updateStorage();
+}
+
+/* ==========================
+   CLOCK
+========================== */
+
+function updateClock(){
+
+    const now=new Date();
+
+    const time=now.toLocaleTimeString("nl-NL",{
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+
+    const date=now.toLocaleDateString("nl-NL",{
+        weekday:"long",
+        day:"numeric",
+        month:"long"
+    });
+
+    document.getElementById("statusTime").textContent=time;
+    document.getElementById("lockTime").textContent=time;
+    document.getElementById("homeClock").textContent=time;
+
+    document.getElementById("lockDate").textContent=date;
+    document.getElementById("homeDate").textContent=date;
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+/* batterij */
+let battery=100;
+
+setInterval(()=>{
+    if(battery>15){
+        battery-=1;
+        document.getElementById("battery").textContent=battery;
+    }
+},30000);
+
+/* ==========================
+   PIN
+========================== */
+
+function pin(n){
+
+    if(currentPin.length>=4)return;
+
+    currentPin+=n;
+
+    for(let i=1;i<=4;i++){
+        document.getElementById("d"+i)
+            .classList.toggle("on",i<=currentPin.length);
+    }
+}
+
+function clearPin(){
+    currentPin=currentPin.slice(0,-1);
+
+    for(let i=1;i<=4;i++){
+        document.getElementById("d"+i)
+            .classList.toggle("on",i<=currentPin.length);
+    }
+}
+
+function unlock(){
+
+    if(currentPin===data.pin){
+
+        document.getElementById("lock").style.display="none";
+        currentPin="";
+
+    }else{
+
+        showNotification("❌ Verkeerde PIN");
+
+        currentPin="";
+
+        for(let i=1;i<=4;i++){
+            document.getElementById("d"+i).classList.remove("on");
+        }
+    }
+}
+
+/* ==========================
+   NAVIGATION
+========================== */
+
+function openPage(id){
+
+    document.querySelectorAll(".page")
+        .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+
+    if(id==="messages")renderMessages();
+    if(id==="notes")renderNotes();
+    if(id==="gallery")renderGallery();
+    if(id==="settings")loadSettings();
+}
+
+function goHome(){
+
+    document.querySelectorAll(".page")
+        .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById("home").classList.add("active");
+}
+
+/* ==========================
+   NOTIFICATIONS
+========================== */
+
+function showNotification(text){
+
+    const n=document.getElementById("notification");
+
+    n.textContent=text;
+    n.style.display="block";
+
+    setTimeout(()=>{
+        n.style.display="none";
+    },2500);
+}
+
+/* ==========================
+   MESSAGES
+========================== */
+
+function renderMessages(){
+
+    const list=document.getElementById("messagesList");
+
+    list.innerHTML="";
+
+    data.messages.forEach(m=>{
+
+        const div=document.createElement("div");
+
+        div.className="message "+(m.from==="Jij"?"me":"");
+
+        div.innerHTML=
+            "<b>"+escapeHTML(m.from)+"</b><br>"+
+            escapeHTML(m.text);
+
+        list.appendChild(div);
     });
 }
 
-const npcs = [
-    {
-        name: "Alex",
-        x: 700,
-        y: 900,
-        color: "#3498db",
-        text: "Hey! Kun je mij helpen? Ik ben iets kwijtgeraakt."
-    },
-    {
-        name: "Sam",
-        x: 1800,
-        y: 1100,
-        color: "#e67e22",
-        text: "Welkom in onze stad! Er is hier veel te ontdekken."
-    },
-    {
-        name: "Mila",
-        x: 2300,
-        y: 2300,
-        color: "#9b59b6",
-        text: "Ik heb gehoord dat er ergens een geheime plek is..."
+function sendMessage(){
+
+    const input=document.getElementById("messageInput");
+
+    const text=input.value.trim();
+
+    if(!text)return;
+
+    data.messages.push({
+        from:"Jij",
+        text:text
+    });
+
+    input.value="";
+
+    save();
+    renderMessages();
+
+    setTimeout(()=>{
+
+        data.messages.push({
+            from:"Alex",
+            text:"Nice 😎"
+        });
+
+        save();
+        renderMessages();
+
+        showNotification("💬 Nieuw bericht van Alex");
+
+    },1000);
+}
+
+/* ==========================
+   PHONE
+========================== */
+
+function callNumber(){
+
+    const number=document.getElementById("numberInput").value;
+
+    if(!number)return;
+
+    document.getElementById("phoneNumber").textContent=number;
+
+    data.calls.unshift({
+        number:number,
+        time:new Date().toLocaleTimeString("nl-NL",{
+            hour:"2-digit",
+            minute:"2-digit"
+        })
+    });
+
+    save();
+
+    showNotification("📞 Bellen naar "+number);
+
+    renderCalls();
+}
+
+function renderCalls(){
+
+    const el=document.getElementById("calls");
+
+    el.innerHTML="";
+
+    data.calls.slice(0,5).forEach(c=>{
+
+        el.innerHTML+=`
+        <div class="contact">
+            📞 ${escapeHTML(c.number)}
+            <small style="float:right">${c.time}</small>
+        </div>`;
+    });
+}
+
+renderCalls();
+
+/* ==========================
+   NOTES
+========================== */
+
+function saveNote(){
+
+    const title=document.getElementById("noteTitle").value.trim();
+    const text=document.getElementById("noteText").value.trim();
+
+    if(!title && !text)return;
+
+    data.notes.unshift({
+        title:title || "Nieuwe notitie",
+        text:text,
+        date:new Date().toLocaleDateString("nl-NL")
+    });
+
+    document.getElementById("noteTitle").value="";
+    document.getElementById("noteText").value="";
+
+    save();
+    renderNotes();
+
+    showNotification("📝 Notitie opgeslagen");
+}
+
+function renderNotes(){
+
+    const list=document.getElementById("notesList");
+
+    list.innerHTML="";
+
+    data.notes.forEach((n,index)=>{
+
+        list.innerHTML+=`
+        <div class="card">
+            <h3>${escapeHTML(n.title)}</h3>
+            <p style="margin:10px 0;white-space:pre-wrap">
+                ${escapeHTML(n.text)}
+            </p>
+            <small>${n.date}</small>
+            <br><br>
+            <button class="danger" onclick="deleteNote(${index})">
+                Verwijderen
+            </button>
+        </div>`;
+    });
+}
+
+function deleteNote(i){
+
+    data.notes.splice(i,1);
+
+    save();
+    renderNotes();
+}
+
+/* ==========================
+   CALCULATOR
+========================== */
+
+function calcInput(v){
+
+    calc+=v;
+
+    document.getElementById("calcDisplay").textContent=calc;
+}
+
+function calcClear(){
+
+    calc="0";
+
+    document.getElementById("calcDisplay").textContent=calc;
+
+    calc="";
+}
+
+function calcDelete(){
+
+    calc=calc.slice(0,-1);
+
+    document.getElementById("calcDisplay").textContent=calc||"0";
+}
+
+function calcResult(){
+
+    try{
+
+        /* Alleen normale calculatortekens */
+        if(!/^[0-9+\-*/().\s]+$/.test(calc)){
+            throw Error();
+        }
+
+        calc=String(Function('"use strict";return ('+calc+')')());
+
+        document.getElementById("calcDisplay").textContent=calc;
+
+    }catch{
+
+        calc="";
+
+        document.getElementById("calcDisplay").textContent="Error";
     }
-];
+}
 
-/* =========================
-   DRAWING
-========================= */
+/* ==========================
+   MUSIC
+========================== */
 
-function drawWorld() {
+function toggleMusic(){
 
-    ctx.fillStyle = "#67b857";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    musicPlaying=!musicPlaying;
 
-    /* Wegen */
+    document.getElementById("playButton").textContent=
+        musicPlaying?"⏸️":"▶️";
 
-    ctx.fillStyle = "#777";
+    if(musicPlaying){
 
-    ctx.fillRect(
-        -camera.x,
-        1300 - camera.y,
-        world.width,
-        180
-    );
+        musicInterval=setInterval(()=>{
 
-    ctx.fillRect(
-        1350 - camera.x,
-        -camera.y,
-        180,
-        world.height
-    );
+            musicProgress+=1;
 
-    /* Water */
+            if(musicProgress>=100){
 
-    ctx.fillStyle = "#4fa3d1";
-
-    ctx.fillRect(
-        2500 - camera.x,
-        -camera.y,
-        500,
-        900
-    );
-
-    /* Buildings */
-
-    buildings.forEach(b => {
-
-        ctx.fillStyle = "#333";
-
-        ctx.fillRect(
-            b.x - camera.x + 8,
-            b.y - camera.y + 8,
-            b.w,
-            b.h
-        );
-
-        ctx.fillStyle = b.color;
-
-        ctx.fillRect(
-            b.x - camera.x,
-            b.y - camera.y,
-            b.w,
-            b.h
-        );
-
-        /* Windows */
-
-        ctx.fillStyle = "#ffe28a";
-
-        for (let x = b.x + 30; x < b.x + b.w - 20; x += 70) {
-            for (let y = b.y + 30; y < b.y + b.h - 20; y += 70) {
-
-                ctx.fillRect(
-                    x - camera.x,
-                    y - camera.y,
-                    25,
-                    30
-                );
+                musicProgress=0;
+                nextSong();
             }
-        }
-    });
 
-    /* Trees */
+            document.getElementById("musicProgress").value=
+                musicProgress;
 
-    trees.forEach(t => {
+        },1000);
 
-        ctx.fillStyle = "#654321";
+    }else{
 
-        ctx.fillRect(
-            t.x - camera.x - 4,
-            t.y - camera.y,
-            8,
-            t.size
-        );
-
-        ctx.fillStyle = "#26733a";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            t.x - camera.x,
-            t.y - camera.y,
-            t.size,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-    });
-
-    /* NPCs */
-
-    npcs.forEach(npc => {
-
-        ctx.fillStyle = npc.color;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            npc.x - camera.x,
-            npc.y - camera.y,
-            18,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        ctx.fillStyle = "white";
-        ctx.font = "bold 13px Arial";
-        ctx.textAlign = "center";
-
-        ctx.fillText(
-            npc.name,
-            npc.x - camera.x,
-            npc.y - camera.y - 27
-        );
-    });
-
-    /* Player */
-
-    ctx.fillStyle = "#111";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        player.x - camera.x,
-        player.y - camera.y,
-        player.size / 2 + 3,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle = "#ffcc66";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        player.x - camera.x,
-        player.y - camera.y,
-        player.size / 2,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle = "white";
-    ctx.font = "bold 13px Arial";
-
-    ctx.fillText(
-        player.name,
-        player.x - camera.x,
-        player.y - camera.y - 25
-    );
-}
-
-/* =========================
-   MOVEMENT
-========================= */
-
-function updatePlayer() {
-
-    if (dialogueOpen) return;
-
-    let dx = 0;
-    let dy = 0;
-
-    if (keys["w"] || keys["arrowup"]) dy--;
-    if (keys["s"] || keys["arrowdown"]) dy++;
-    if (keys["a"] || keys["arrowleft"]) dx--;
-    if (keys["d"] || keys["arrowright"]) dx++;
-
-    if (dx !== 0 || dy !== 0) {
-
-        const length = Math.sqrt(dx * dx + dy * dy);
-
-        dx /= length;
-        dy /= length;
-
-        let speed = player.speed;
-
-        if (keys["shift"] && player.energy > 0) {
-            speed = player.sprintSpeed;
-            player.energy -= 0.8;
-        } else {
-            player.energy += 0.4;
-        }
-
-        player.energy = Math.max(
-            0,
-            Math.min(100, player.energy)
-        );
-
-        player.x += dx * speed;
-        player.y += dy * speed;
+        clearInterval(musicInterval);
     }
-
-    /* World boundaries */
-
-    player.x = Math.max(
-        20,
-        Math.min(world.width - 20, player.x)
-    );
-
-    player.y = Math.max(
-        20,
-        Math.min(world.height - 20, player.y)
-    );
 }
 
-/* =========================
+function nextSong(){
+
+    songIndex=(songIndex+1)%songs.length;
+
+    document.getElementById("songName").textContent=
+        songs[songIndex];
+
+    musicProgress=0;
+}
+
+function previousSong(){
+
+    songIndex=(songIndex-1+songs.length)%songs.length;
+
+    document.getElementById("songName").textContent=
+        songs[songIndex];
+
+    musicProgress=0;
+}
+
+/* ==========================
    CAMERA
-========================= */
+========================== */
 
-function updateCamera() {
+function takePhoto(){
 
-    camera.x = player.x - canvas.width / 2;
-    camera.y = player.y - canvas.height / 2;
-
-    camera.x = Math.max(
-        0,
-        Math.min(
-            world.width - canvas.width,
-            camera.x
-        )
-    );
-
-    camera.y = Math.max(
-        0,
-        Math.min(
-            world.height - canvas.height,
-            camera.y
-        )
-    );
-}
-
-/* =========================
-   NPC INTERACTION
-========================= */
-
-function getNearbyNPC() {
-
-    let closest = null;
-    let distance = Infinity;
-
-    npcs.forEach(npc => {
-
-        const dx = npc.x - player.x;
-        const dy = npc.y - player.y;
-
-        const d = Math.sqrt(dx * dx + dy * dy);
-
-        if (d < distance) {
-            distance = d;
-            closest = npc;
-        }
-    });
-
-    if (distance < 70) {
-        return closest;
-    }
-
-    return null;
-}
-
-function interact() {
-
-    if (dialogueOpen) return;
-
-    const npc = getNearbyNPC();
-
-    if (!npc) return;
-
-    currentNPC = npc;
-
-    document.getElementById("dialogueName").textContent =
-        npc.name;
-
-    if (!quest.started) {
-
-        document.getElementById("dialogueText").textContent =
-            npc.text;
-
-        quest.started = true;
-
-        document.getElementById("questText").textContent =
-            "Ga naar Sam om de quest te vervolgen.";
-
-    } else if (
-        quest.started &&
-        npc.name === "Sam" &&
-        !quest.completed
-    ) {
-
-        document.getElementById("dialogueText").textContent =
-            "Goed gedaan! Hier is je beloning.";
-
-        player.money += quest.reward;
-        player.xp += 100;
-
-        quest.completed = true;
-
-        document.getElementById("questText").textContent =
-            "✅ Quest voltooid!";
-
-        saveGame();
-
-    } else {
-
-        document.getElementById("dialogueText").textContent =
-            npc.text;
-    }
-
-    dialogueOpen = true;
-
-    document.getElementById("dialogue").style.display =
-        "block";
-}
-
-function closeDialogue() {
-
-    dialogueOpen = false;
-
-    document.getElementById("dialogue").style.display =
-        "none";
-}
-
-document.getElementById("dialogueButton").onclick =
-    closeDialogue;
-
-/* =========================
-   HUD
-========================= */
-
-function updateHUD() {
-
-    document.getElementById("playerName").textContent =
-        player.name;
-
-    document.getElementById("money").textContent =
-        player.money;
-
-    document.getElementById("xp").textContent =
-        player.xp;
-
-    document.getElementById("healthBar").style.width =
-        player.health + "%";
-
-    document.getElementById("energyBar").style.width =
-        player.energy + "%";
-
-    const npc = getNearbyNPC();
-
-    document.getElementById("interaction").style.display =
-        npc && !dialogueOpen ? "block" : "none";
-}
-
-/* =========================
-   SAVE SYSTEM
-========================= */
-
-function saveGame() {
-
-    const saveData = {
-        player,
-        quest
+    const photo={
+        date:new Date().toLocaleString("nl-NL"),
+        emoji:["🌅","🌳","🏙️","🌌","🌈"][
+            Math.floor(Math.random()*5)
+        ]
     };
 
-    localStorage.setItem(
-        "openWorldSave",
-        JSON.stringify(saveData)
+    data.photos.unshift(photo);
+
+    save();
+
+    showNotification("📸 Foto gemaakt!");
+
+    document.getElementById("cameraView").textContent=photo.emoji;
+}
+
+/* ==========================
+   GALLERY
+========================== */
+
+function renderGallery(){
+
+    const list=document.getElementById("galleryList");
+
+    if(data.photos.length===0){
+
+        list.innerHTML=`
+        <div class="card" style="text-align:center">
+            Nog geen foto's 📷
+        </div>`;
+
+        return;
+    }
+
+    list.innerHTML="";
+
+    data.photos.forEach((p,index)=>{
+
+        list.innerHTML+=`
+        <div class="card" style="text-align:center">
+            <div style="font-size:100px">${p.emoji}</div>
+            <p>${p.date}</p>
+            <br>
+            <button class="danger"
+                onclick="deletePhoto(${index})">
+                Verwijderen
+            </button>
+        </div>`;
+    });
+}
+
+function deletePhoto(i){
+
+    data.photos.splice(i,1);
+
+    save();
+    renderGallery();
+}
+
+/* ==========================
+   BROWSER
+========================== */
+
+function searchBrowser(){
+
+    const q=document.getElementById("browserInput")
+        .value.trim();
+
+    if(!q)return;
+
+    const result=document.getElementById("browserResult");
+
+    result.innerHTML=`
+        <h2>🔎 Zoekresultaat</h2>
+        <br>
+        <h3>${escapeHTML(q)}</h3>
+        <p style="margin-top:10px">
+            Dit is een gesimuleerd zoekresultaat.
+            In een volgende versie kunnen we hier een echte
+            browserinterface van maken.
+        </p>`;
+}
+
+/* ==========================
+   STOPWATCH
+========================== */
+
+function formatTime(seconds){
+
+    const h=Math.floor(seconds/3600);
+    const m=Math.floor((seconds%3600)/60);
+    const s=seconds%60;
+
+    return String(h).padStart(2,"0")+":"+
+           String(m).padStart(2,"0")+":"+
+           String(s).padStart(2,"0");
+}
+
+function startStopwatch(){
+
+    if(stopwatchRunning){
+
+        stopwatchRunning=false;
+        clearInterval(stopwatchInterval);
+
+        document.getElementById("stopwatchButton")
+            .textContent="Start";
+
+        return;
+    }
+
+    stopwatchRunning=true;
+
+    document.getElementById("stopwatchButton")
+        .textContent="Pauze";
+
+    stopwatchInterval=setInterval(()=>{
+
+        stopwatchSeconds++;
+
+        document.getElementById("timerDisplay")
+            .textContent=formatTime(stopwatchSeconds);
+
+    },1000);
+}
+
+function resetStopwatch(){
+
+    stopwatchRunning=false;
+    clearInterval(stopwatchInterval);
+
+    stopwatchSeconds=0;
+
+    document.getElementById("timerDisplay")
+        .textContent="00:00:00";
+
+    document.getElementById("stopwatchButton")
+        .textContent="Start";
+}
+
+/* countdown */
+
+function startCountdown(){
+
+    clearInterval(countdownInterval);
+
+    let seconds=parseInt(
+        document.getElementById("countdownInput").value
     );
+
+    if(!seconds || seconds<=0)return;
+
+    document.getElementById("countdownDisplay")
+        .textContent=seconds;
+
+    countdownInterval=setInterval(()=>{
+
+        seconds--;
+
+        document.getElementById("countdownDisplay")
+            .textContent=seconds;
+
+        if(seconds<=0){
+
+            clearInterval(countdownInterval);
+
+            showNotification("⏰ Timer afgelopen!");
+        }
+
+    },1000);
 }
 
-function loadGame() {
+/* ==========================
+   SETTINGS
+========================== */
 
-    const saved =
-        localStorage.getItem("openWorldSave");
+function loadSettings(){
 
-    if (!saved) return;
+    document.getElementById("profileName").value=data.name;
 
-    try {
+    document.getElementById("darkToggle")
+        .classList.toggle("on",data.dark);
 
-        const data = JSON.parse(saved);
+    updateStorage();
+}
 
-        player = data.player || player;
-        quest = data.quest || quest;
+function toggleDark(){
 
-    } catch (error) {
+    data.dark=!data.dark;
 
-        console.log("Save kon niet worden geladen.");
+    document.body.classList.toggle("dark",data.dark);
+
+    document.getElementById("darkToggle")
+        .classList.toggle("on",data.dark);
+
+    save();
+}
+
+function saveProfile(){
+
+    const name=document.getElementById("profileName")
+        .value.trim();
+
+    if(name)data.name=name;
+
+    save();
+
+    showNotification("✅ Profiel opgeslagen");
+}
+
+function changePin(){
+
+    const newPin=prompt(
+        "Kies een nieuwe PIN van 4 cijfers:"
+    );
+
+    if(/^\d{4}$/.test(newPin)){
+
+        data.pin=newPin;
+
+        save();
+
+        showNotification("🔒 PIN gewijzigd");
+    }else{
+
+        showNotification("PIN moet precies 4 cijfers zijn");
     }
 }
 
-/* =========================
-   GAME LOOP
-========================= */
+function updateStorage(){
 
-function gameLoop() {
+    const bytes=new Blob([
+        JSON.stringify(data)
+    ]).size;
 
-    updatePlayer();
-    updateCamera();
-
-    drawWorld();
-    updateHUD();
-
-    requestAnimationFrame(gameLoop);
+    document.getElementById("storageInfo").textContent=
+        "Opgeslagen gegevens: "+bytes+" bytes";
 }
 
-/* =========================
-   START
-========================= */
+function resetPhone(){
 
-document.getElementById("startButton").onclick = () => {
+    if(confirm("Alles verwijderen en telefoon resetten?")){
 
-    const name =
-        document.getElementById("nameInput").value.trim();
+        localStorage.removeItem("myPhone");
 
-    if (name.length > 0) {
-        player.name = name;
+        location.reload();
     }
+}
 
-    loadGame();
+/* ==========================
+   SECURITY
+========================== */
 
-    /* Naam uit input behouden */
-    player.name = name || player.name;
+function escapeHTML(text){
 
-    document.getElementById("startScreen").style.display =
-        "none";
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
 
-    saveGame();
+/* ==========================
+   STARTUP
+========================== */
 
-    gameLoop();
-};
+document.body.classList.toggle("dark",data.dark);
 
-/* Autosave */
+document.getElementById("profileName").value=data.name;
 
-setInterval(() => {
-
-    if (
-        document.getElementById("startScreen").style.display
-        === "none"
-    ) {
-        saveGame();
-    }
-
-}, 5000);
+renderMessages();
+renderNotes();
+renderCalls();
+renderGallery();
+updateStorage();
 </script>
 
 </body>
