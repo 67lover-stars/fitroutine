@@ -3,2041 +3,892 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FitRoutine</title>
+<title>Open World Adventure</title>
 
 <style>
-:root {
-  --bg: #0b0f14;
-  --card: #141a22;
-  --card2: #10161d;
-  --text: #f5f7fa;
-  --muted: #9da8b5;
-  --border: #293441;
-  --accent: #5eead4;
-  --accent2: #2dd4bf;
-  --danger: #fb7185;
-  --warning: #fbbf24;
-}
-
-body.light {
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --card2: #f8fafc;
-  --text: #111827;
-  --muted: #64748b;
-  --border: #dbe2ea;
-  --accent: #0f766e;
-  --accent2: #14b8a6;
-}
-
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: .2s;
+    overflow: hidden;
+    background: #111;
+    font-family: Arial, sans-serif;
+    user-select: none;
 }
 
-button,
-input,
-select {
-  font: inherit;
+canvas {
+    display: block;
+    background: #6dbb58;
 }
 
-button {
-  cursor: pointer;
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* LOGIN */
-
-#loginScreen {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.loginBox {
-  width: min(450px, 100%);
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 30px;
-  text-align: center;
-}
-
-.logo {
-  font-size: 48px;
-}
-
-.loginBox h1 {
-  margin: 10px 0;
-  font-size: 38px;
-}
-
-.loginBox p {
-  color: var(--muted);
-}
-
-input,
-select {
-  width: 100%;
-  padding: 13px;
-  border-radius: 11px;
-  border: 1px solid var(--border);
-  background: var(--card2);
-  color: var(--text);
-  margin-top: 7px;
-  margin-bottom: 15px;
-}
-
-.primary {
-  background: var(--accent);
-  color: #061312;
-  border: 0;
-  padding: 14px 18px;
-  border-radius: 11px;
-  font-weight: bold;
-  width: 100%;
-}
-
-.secondary {
-  background: var(--card2);
-  color: var(--text);
-  border: 1px solid var(--border);
-  padding: 12px 16px;
-  border-radius: 11px;
-}
-
-/* APP */
-
-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-}
-
-.headerInner {
-  width: min(1100px, 94%);
-  margin: auto;
-  min-height: 65px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.headerXP {
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.container {
-  width: min(1100px, 94%);
-  margin: auto;
-  padding: 25px 0 100px;
-}
-
-/* NAV */
-
-.nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 30;
-  background: var(--card);
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: center;
-}
-
-.nav button {
-  background: transparent;
-  color: var(--muted);
-  border: 0;
-  padding: 12px 15px;
-  min-width: 75px;
-}
-
-.nav button.active {
-  color: var(--accent);
-}
-
-.navIcon {
-  font-size: 21px;
-  display: block;
-}
-
-.navText {
-  font-size: 11px;
-}
-
-/* CARDS */
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 18px;
-}
-
-.hero {
-  padding: 25px;
-}
-
-.hero h1 {
-  margin: 0 0 8px;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+/* HUD */
+#hud {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 12px 15px;
+    border-radius: 12px;
+    min-width: 190px;
+    backdrop-filter: blur(5px);
 }
 
 .stat {
-  background: var(--card2);
-  border-radius: 14px;
-  padding: 15px;
-  text-align: center;
+    margin: 5px 0;
 }
 
-.statNumber {
-  font-size: 25px;
-  font-weight: bold;
+.bar {
+    width: 150px;
+    height: 8px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 3px;
 }
 
-.statLabel {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 4px;
+#healthBar {
+    height: 100%;
+    width: 100%;
+    background: #ff4d4d;
 }
 
-.progress {
-  height: 10px;
-  background: var(--card2);
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 10px;
+#energyBar {
+    height: 100%;
+    width: 100%;
+    background: #4db8ff;
 }
 
-.progressBar {
-  height: 100%;
-  width: 0%;
-  background: var(--accent);
-  transition: .3s;
+/* Quest */
+#quest {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    background: rgba(0,0,0,.65);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    width: 230px;
 }
 
-/* TASKS */
-
-.task {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 15px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  margin-bottom: 10px;
+#quest h3 {
+    margin-bottom: 8px;
 }
 
-.task.done {
-  opacity: .55;
+/* Interaction */
+#interaction {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: rgba(0,0,0,.8);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 12px;
+    display: none;
 }
 
-.task input[type="checkbox"] {
-  width: 22px;
-  height: 22px;
-  margin: 0;
-  accent-color: var(--accent);
+/* Dialogue */
+#dialogue {
+    position: fixed;
+    left: 50%;
+    bottom: 80px;
+    transform: translateX(-50%);
+    width: min(600px, 90%);
+    background: rgba(0,0,0,.92);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 30;
+    display: none;
 }
 
-.taskInfo {
-  flex: 1;
+#dialogueName {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.taskName {
-  font-weight: bold;
+#dialogueText {
+    line-height: 1.5;
+    margin-bottom: 15px;
 }
 
-.taskDetails {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 4px;
+button {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 9px;
+    cursor: pointer;
+    background: white;
+    color: black;
+    font-weight: bold;
 }
 
-.xp {
-  color: var(--warning);
-  font-size: 13px;
-  font-weight: bold;
+button:hover {
+    opacity: .8;
 }
 
-/* ROUTINE */
-
-.day {
-  margin-bottom: 15px;
+/* Start screen */
+#startScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #111, #263238);
+    color: white;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
-.dayHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+.startBox {
+    width: min(500px, 90%);
 }
 
-.exercise {
-  border-top: 1px solid var(--border);
-  padding: 15px 0;
+.startBox h1 {
+    font-size: 45px;
+    margin-bottom: 15px;
 }
 
-.exercise:first-child {
-  border-top: 0;
+.startBox p {
+    color: #bbb;
+    margin-bottom: 25px;
 }
 
-.exerciseName {
-  font-weight: bold;
-  font-size: 17px;
+#nameInput {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 12px;
+    font-size: 16px;
 }
 
-.tag {
-  display: inline-block;
-  background: var(--card2);
-  color: var(--accent);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 8px;
-  font-size: 11px;
-  margin-top: 7px;
+#startButton {
+    width: 100%;
+    background: #4caf50;
+    color: white;
 }
 
-.details {
-  color: var(--muted);
-  margin-top: 5px;
+/* Mobile controls */
+#mobileControls {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 15;
 }
 
-/* LEADERBOARD */
-
-.player {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 14px;
-  border-bottom: 1px solid var(--border);
+.controlRow {
+    display: flex;
+    justify-content: center;
 }
 
-.player:last-child {
-  border-bottom: 0;
+.control {
+    width: 55px;
+    height: 55px;
+    margin: 3px;
+    border-radius: 12px;
+    background: rgba(0,0,0,.55);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
 }
 
-.rank {
-  width: 35px;
-  font-weight: bold;
-  font-size: 18px;
-}
+@media (max-width: 700px) {
+    #mobileControls {
+        display: block;
+    }
 
-.playerName {
-  flex: 1;
-  font-weight: bold;
-}
+    #quest {
+        width: 180px;
+        font-size: 12px;
+    }
 
-.playerXP {
-  color: var(--accent);
-  font-weight: bold;
-}
+    #hud {
+        font-size: 12px;
+        min-width: 150px;
+    }
 
-/* SETTINGS */
-
-.setting {
-  padding: 15px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.setting:last-child {
-  border-bottom: 0;
-}
-
-.settingTitle {
-  font-weight: bold;
-}
-
-.settingDescription {
-  color: var(--muted);
-  font-size: 13px;
-  margin: 5px 0 12px;
-}
-
-.danger {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
-/* MESSAGE */
-
-.message {
-  padding: 13px;
-  border-radius: 10px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  margin-bottom: 15px;
-}
-
-/* MOBILE */
-
-@media(max-width: 700px) {
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .headerInner {
-    min-height: 58px;
-  }
-
-  .brand {
-    font-size: 18px;
-  }
-
-  .nav button {
-    min-width: 60px;
-    padding: 10px 5px;
-  }
-
-  .navText {
-    font-size: 10px;
-  }
+    .startBox h1 {
+        font-size: 32px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<div id="startScreen">
+    <div class="startBox">
+        <h1>🌍 Open World</h1>
+        <p>Verken de wereld, praat met NPC's en voltooi quests.</p>
 
-<section id="loginScreen">
+        <input
+            id="nameInput"
+            placeholder="Jouw naam..."
+            maxlength="20"
+        >
 
-  <div class="loginBox">
-
-    <div class="logo">💪</div>
-
-    <h1>FitRoutine</h1>
-
-    <p>
-      Bouw je kracht, verbeter je skills en houd je voortgang bij.
-    </p>
-
-    <label>Hoe heet je?</label>
-
-    <input
-      id="nameInput"
-      type="text"
-      maxlength="20"
-      placeholder="Vul je naam in..."
-    >
-
-    <button class="primary" onclick="startApp()">
-      Start mijn training 🚀
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- APP -->
-
-<div id="app" class="hidden">
-
-<header>
-
-  <div class="headerInner">
-
-    <div class="brand">
-      💪 FitRoutine
+        <button id="startButton">START GAME</button>
     </div>
-
-    <div class="headerXP">
-      ⭐ <span id="headerXP">0</span> XP
-    </div>
-
-  </div>
-
-</header>
-
-
-<main class="container">
-
-  <!-- HOME -->
-
-  <section id="homePage" class="page">
-
-    <div class="card hero">
-
-      <h1>Hoi <span id="userName"></span>! 👋</h1>
-
-      <p class="muted">
-        Klaar om vandaag iets sterker te worden?
-      </p>
-
-      <div class="stats">
-
-        <div class="stat">
-          <div class="statNumber" id="totalXP">0</div>
-          <div class="statLabel">XP</div>
-        </div>
-
-        <div class="stat">
-          <div class="statNumber" id="levelNumber">1</div>
-          <div class="statLabel">Level</div>
-        </div>
-
-        <div class="stat">
-          <div class="statNumber" id="streakNumber">0</div>
-          <div class="statLabel">🔥 Streak</div>
-        </div>
-
-        <div class="stat">
-          <div class="statNumber" id="completedNumber">0</div>
-          <div class="statLabel">Taken</div>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="card">
-
-      <h2>📅 Vandaag</h2>
-
-      <p id="todayMessage" class="muted"></p>
-
-      <div id="homeTasks"></div>
-
-      <div id="homeProgressText"></div>
-
-      <div class="progress">
-        <div id="homeProgress" class="progressBar"></div>
-      </div>
-
-    </div>
-
-
-    <div class="card">
-
-      <h2>🎯 Jouw doelen</h2>
-
-      <div class="grid">
-
-        <div>
-          <strong>Handstand</strong>
-          <p class="muted" id="homeHandstand">Nog niet ingesteld</p>
-        </div>
-
-        <div>
-          <strong>Planche</strong>
-          <p class="muted" id="homePlanche">Nog niet ingesteld</p>
-        </div>
-
-        <div>
-          <strong>L-sit</strong>
-          <p class="muted" id="homeLsit">Nog niet ingesteld</p>
-        </div>
-
-        <div>
-          <strong>Pull-ups</strong>
-          <p class="muted" id="homePullups">0 reps</p>
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ROUTINE -->
-
-  <section id="routinePage" class="page hidden">
-
-    <div class="card">
-
-      <h1>🏋️ Jouw routine</h1>
-
-      <p class="muted">
-        Gebaseerd op jouw ingevulde niveau.
-      </p>
-
-      <button class="primary" onclick="generateRoutine()">
-        Nieuwe routine maken
-      </button>
-
-    </div>
-
-    <div id="routine"></div>
-
-  </section>
-
-
-  <!-- TASKS -->
-
-  <section id="tasksPage" class="page hidden">
-
-    <div class="card">
-
-      <h1>✅ Taken</h1>
-
-      <p class="muted">
-        Voltooi je taken om XP te verdienen.
-      </p>
-
-      <div id="tasks"></div>
-
-      <div class="progress">
-        <div id="taskProgress" class="progressBar"></div>
-      </div>
-
-      <p id="taskProgressText" class="muted"></p>
-
-    </div>
-
-  </section>
-
-
-  <!-- LEADERBOARD -->
-
-  <section id="leaderboardPage" class="page hidden">
-
-    <div class="card">
-
-      <h1>🏆 Leaderboard</h1>
-
-      <p class="muted">
-        Dit leaderboard wordt op dit apparaat opgeslagen.
-      </p>
-
-      <div id="leaderboard"></div>
-
-    </div>
-
-    <div class="card">
-
-      <h2>➕ Speler toevoegen</h2>
-
-      <p class="muted">
-        Voeg vrienden toe om een lokaal klassement te maken.
-      </p>
-
-      <input
-        id="friendName"
-        maxlength="20"
-        placeholder="Naam van vriend..."
-      >
-
-      <input
-        id="friendXP"
-        type="number"
-        min="0"
-        placeholder="XP"
-      >
-
-      <button class="primary" onclick="addFriend()">
-        Toevoegen
-      </button>
-
-    </div>
-
-  </section>
-
-
-  <!-- SETTINGS -->
-
-  <section id="settingsPage" class="page hidden">
-
-    <div class="card">
-
-      <h1>⚙️ Settings</h1>
-
-      <div class="setting">
-
-        <div class="settingTitle">
-          🎨 Thema
-        </div>
-
-        <div class="settingDescription">
-          Kies hoe FitRoutine eruitziet.
-        </div>
-
-        <button class="secondary" onclick="toggleTheme()">
-          🌙 / ☀️ Light / Dark
-        </button>
-
-      </div>
-
-
-      <div class="setting">
-
-        <div class="settingTitle">
-          👤 Naam
-        </div>
-
-        <div class="settingDescription">
-          Verander je naam.
-        </div>
-
-        <input id="newName" maxlength="20">
-
-        <button class="secondary" onclick="changeName()">
-          Naam opslaan
-        </button>
-
-      </div>
-
-
-      <div class="setting">
-
-        <div class="settingTitle">
-          🏋️ Niveau aanpassen
-        </div>
-
-        <div class="settingDescription">
-          Pas je calisthenics-niveau aan.
-        </div>
-
-        <button class="primary" onclick="showProfileEditor()">
-          Profiel aanpassen
-        </button>
-
-      </div>
-
-
-      <div class="setting">
-
-        <div class="settingTitle">
-          ⚠️ Gegevens wissen
-        </div>
-
-        <div class="settingDescription">
-          Hiermee worden je lokale gegevens verwijderd.
-        </div>
-
-        <button class="secondary danger" onclick="resetEverything()">
-          Alles wissen
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <div id="profileEditor" class="card hidden">
-
-      <h2>📊 Niveau</h2>
-
-      <label>Push-ups maximaal</label>
-      <input id="pushups" type="number" min="0">
-
-      <label>Pull-ups maximaal</label>
-      <input id="pullups" type="number" min="0">
-
-      <label>Dips maximaal</label>
-      <input id="dips" type="number" min="0">
-
-      <label>Squats maximaal</label>
-      <input id="squats" type="number" min="0">
-
-      <label>Sit-ups maximaal</label>
-      <input id="situps" type="number" min="0">
-
-      <label>Plank maximaal in seconden</label>
-      <input id="plank" type="number" min="0">
-
-      <label>Handstand hold in seconden</label>
-      <input id="handstand" type="number" min="0">
-
-      <label>Handstand niveau</label>
-      <select id="handstandLevel">
-        <option value="0">Nog niet</option>
-        <option value="1">Ik oefen kick-ups</option>
-        <option value="2">Ik kan soms staan</option>
-        <option value="3">Redelijk stabiel</option>
-        <option value="4">Goed gecontroleerd</option>
-      </select>
-
-      <label>L-sit niveau</label>
-      <select id="lsit">
-        <option value="0">Nog niet</option>
-        <option value="1">Tuck hold</option>
-        <option value="2">Korte L-sit</option>
-        <option value="3">Goede L-sit</option>
-        <option value="4">20+ sec</option>
-      </select>
-
-      <label>Planche niveau</label>
-      <select id="planche">
-        <option value="0">Nog niet</option>
-        <option value="1">Planche lean</option>
-        <option value="2">Frog stand</option>
-        <option value="3">Tuck planche</option>
-        <option value="4">Advanced tuck</option>
-      </select>
-
-      <label>Trainingsdagen</label>
-      <select id="days">
-        <option value="2">2 dagen</option>
-        <option value="3">3 dagen</option>
-        <option value="4">4 dagen</option>
-        <option value="5">5 dagen</option>
-      </select>
-
-      <label>Algemeen niveau</label>
-      <select id="level">
-        <option value="easy">Beginner</option>
-        <option value="normal">Gemiddeld</option>
-        <option value="hard">Gevorderd</option>
-      </select>
-
-      <label>Belangrijkste doel</label>
-      <select id="goal">
-        <option value="strength">Kracht</option>
-        <option value="skills">Skills</option>
-        <option value="pull">Pull-ups</option>
-        <option value="push">Push</option>
-        <option value="core">Core</option>
-        <option value="balanced">Alles</option>
-      </select>
-
-      <button class="primary" onclick="saveProfile()">
-        Opslaan & routine maken
-      </button>
-
-    </div>
-
-  </section>
-
-</main>
-
-
-<!-- NAVIGATION -->
-
-<nav class="nav">
-
-  <button onclick="showPage('homePage', this)" class="active">
-    <span class="navIcon">🏠</span>
-    <span class="navText">Home</span>
-  </button>
-
-  <button onclick="showPage('routinePage', this)">
-    <span class="navIcon">🏋️</span>
-    <span class="navText">Routine</span>
-  </button>
-
-  <button onclick="showPage('tasksPage', this)">
-    <span class="navIcon">✅</span>
-    <span class="navText">Taken</span>
-  </button>
-
-  <button onclick="showPage('leaderboardPage', this)">
-    <span class="navIcon">🏆</span>
-    <span class="navText">Rank</span>
-  </button>
-
-  <button onclick="showPage('settingsPage', this)">
-    <span class="navIcon">⚙️</span>
-    <span class="navText">Settings</span>
-  </button>
-
-</nav>
-
 </div>
 
+<canvas id="game"></canvas>
+
+<div id="hud">
+    <div>🧍 <span id="playerName">Speler</span></div>
+    <div class="stat">❤️ Health</div>
+    <div class="bar">
+        <div id="healthBar"></div>
+    </div>
+
+    <div class="stat">⚡ Energy</div>
+    <div class="bar">
+        <div id="energyBar"></div>
+    </div>
+
+    <div class="stat">💰 €<span id="money">0</span></div>
+    <div class="stat">⭐ XP <span id="xp">0</span></div>
+</div>
+
+<div id="quest">
+    <h3>📜 Quest</h3>
+    <div id="questText">
+        Zoek iemand om mee te praten.
+    </div>
+</div>
+
+<div id="interaction">
+    Druk op <b>E</b> om interactie te hebben
+</div>
+
+<div id="dialogue">
+    <div id="dialogueName">NPC</div>
+    <div id="dialogueText"></div>
+    <button id="dialogueButton">Doorgaan</button>
+</div>
+
+<div id="mobileControls">
+    <div class="controlRow">
+        <div class="control" data-key="w">▲</div>
+    </div>
+
+    <div class="controlRow">
+        <div class="control" data-key="a">◀</div>
+        <div class="control" data-key="s">▼</div>
+        <div class="control" data-key="d">▶</div>
+    </div>
+</div>
 
 <script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resize);
+resize();
 
 /* =========================
-   DATA
+   GAME DATA
 ========================= */
 
-let appData = {
-  name: "",
-  xp: 0,
-  streak: 0,
-  completed: 0,
-  lastCompletedDate: "",
-  theme: "dark",
-
-  profile: {
-    pushups: 10,
-    pullups: 0,
-    dips: 0,
-    squats: 20,
-    situps: 20,
-    plank: 30,
-    handstand: 0,
-    handstandLevel: 0,
-    lsit: 0,
-    planche: 0,
-    days: 3,
-    level: "easy",
-    goal: "balanced"
-  },
-
-  tasks: [],
-
-  friends: []
+let player = {
+    x: 1000,
+    y: 1000,
+    size: 28,
+    speed: 3,
+    sprintSpeed: 5,
+    health: 100,
+    energy: 100,
+    money: 0,
+    xp: 0,
+    name: "Speler"
 };
 
+let keys = {};
+
+let camera = {
+    x: 0,
+    y: 0
+};
+
+let world = {
+    width: 3000,
+    height: 3000
+};
+
+let quest = {
+    started: false,
+    completed: false,
+    reward: 100
+};
+
+let dialogueOpen = false;
+let currentNPC = null;
 
 /* =========================
-   OPSLAAN
+   INPUT
 ========================= */
 
-function saveData() {
-  localStorage.setItem(
-    "fitroutineApp",
-    JSON.stringify(appData)
-  );
-}
+window.addEventListener("keydown", e => {
+    keys[e.key.toLowerCase()] = true;
 
+    if (e.key.toLowerCase() === "e") {
+        interact();
+    }
 
-/* =========================
-   LADEN
-========================= */
+    if (e.key === "Escape") {
+        closeDialogue();
+    }
+});
 
-function loadData() {
+window.addEventListener("keyup", e => {
+    keys[e.key.toLowerCase()] = false;
+});
 
-  const saved = localStorage.getItem("fitroutineApp");
+/* Mobile */
+document.querySelectorAll(".control").forEach(button => {
 
-  if (!saved) return;
+    const key = button.dataset.key;
 
-  try {
-
-    const parsed = JSON.parse(saved);
-
-    appData = {
-      ...appData,
-      ...parsed,
-      profile: {
-        ...appData.profile,
-        ...(parsed.profile || {})
-      }
-    };
-
-  } catch (error) {
-
-    console.log("Data kon niet geladen worden.");
-
-  }
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-function startApp() {
-
-  const name = document
-    .getElementById("nameInput")
-    .value
-    .trim();
-
-  if (!name) {
-    alert("Vul eerst je naam in.");
-    return;
-  }
-
-  appData.name = name;
-
-  saveData();
-
-  enterApp();
-
-}
-
-
-function enterApp() {
-
-  document
-    .getElementById("loginScreen")
-    .classList.add("hidden");
-
-  document
-    .getElementById("app")
-    .classList.remove("hidden");
-
-  applyTheme();
-
-  fillProfile();
-
-  generateRoutine();
-
-  createTasks();
-
-  updateUI();
-
-}
-
-
-/* =========================
-   NAVIGATIE
-========================= */
-
-function showPage(pageId, button) {
-
-  document
-    .querySelectorAll(".page")
-    .forEach(page => {
-      page.classList.add("hidden");
+    button.addEventListener("touchstart", e => {
+        e.preventDefault();
+        keys[key] = true;
     });
 
-  document
-    .getElementById(pageId)
-    .classList.remove("hidden");
-
-  document
-    .querySelectorAll(".nav button")
-    .forEach(btn => {
-      btn.classList.remove("active");
+    button.addEventListener("touchend", e => {
+        e.preventDefault();
+        keys[key] = false;
     });
-
-  button.classList.add("active");
-
-  updateUI();
-}
-
+});
 
 /* =========================
-   PROFIEL
+   WORLD
 ========================= */
 
-function fillProfile() {
+const buildings = [
+    {x:300,y:300,w:300,h:220,color:"#d88b68"},
+    {x:850,y:250,w:350,h:250,color:"#8e9cc4"},
+    {x:1500,y:400,w:300,h:250,color:"#c9a56a"},
+    {x:2200,y:300,w:400,h:250,color:"#aa7ac4"},
+    {x:400,y:1700,w:350,h:250,color:"#d86f6f"},
+    {x:1200,y:1600,w:400,h:300,color:"#7c9bca"},
+    {x:2050,y:1800,w:400,h:300,color:"#d29c57"}
+];
 
-  const p = appData.profile;
+const trees = [];
 
-  document.getElementById("userName").textContent =
-    appData.name;
+for (let i = 0; i < 100; i++) {
 
-  document.getElementById("newName").value =
-    appData.name;
-
-  document.getElementById("pushups").value = p.pushups;
-  document.getElementById("pullups").value = p.pullups;
-  document.getElementById("dips").value = p.dips;
-  document.getElementById("squats").value = p.squats;
-  document.getElementById("situps").value = p.situps;
-  document.getElementById("plank").value = p.plank;
-  document.getElementById("handstand").value = p.handstand;
-
-  document.getElementById("handstandLevel").value =
-    p.handstandLevel;
-
-  document.getElementById("lsit").value =
-    p.lsit;
-
-  document.getElementById("planche").value =
-    p.planche;
-
-  document.getElementById("days").value =
-    p.days;
-
-  document.getElementById("level").value =
-    p.level;
-
-  document.getElementById("goal").value =
-    p.goal;
+    trees.push({
+        x: Math.random() * world.width,
+        y: Math.random() * world.height,
+        size: 20 + Math.random() * 20
+    });
 }
 
-
-function saveProfile() {
-
-  appData.profile = {
-    pushups: Number(document.getElementById("pushups").value) || 0,
-    pullups: Number(document.getElementById("pullups").value) || 0,
-    dips: Number(document.getElementById("dips").value) || 0,
-    squats: Number(document.getElementById("squats").value) || 0,
-    situps: Number(document.getElementById("situps").value) || 0,
-    plank: Number(document.getElementById("plank").value) || 0,
-    handstand: Number(document.getElementById("handstand").value) || 0,
-
-    handstandLevel:
-      Number(document.getElementById("handstandLevel").value),
-
-    lsit:
-      Number(document.getElementById("lsit").value),
-
-    planche:
-      Number(document.getElementById("planche").value),
-
-    days:
-      Number(document.getElementById("days").value),
-
-    level:
-      document.getElementById("level").value,
-
-    goal:
-      document.getElementById("goal").value
-  };
-
-  saveData();
-
-  generateRoutine();
-
-  createTasks();
-
-  updateUI();
-
-  alert("Profiel opgeslagen! 💪");
-
-}
-
-
-function showProfileEditor() {
-
-  document
-    .getElementById("profileEditor")
-    .classList.remove("hidden");
-
-}
-
-
-/* =========================
-   NAAM
-========================= */
-
-function changeName() {
-
-  const name =
-    document.getElementById("newName")
-      .value
-      .trim();
-
-  if (!name) return;
-
-  appData.name = name;
-
-  saveData();
-
-  fillProfile();
-
-  updateUI();
-
-}
-
-
-/* =========================
-   THEME
-========================= */
-
-function applyTheme() {
-
-  if (appData.theme === "light") {
-    document.body.classList.add("light");
-  } else {
-    document.body.classList.remove("light");
-  }
-
-}
-
-
-function toggleTheme() {
-
-  appData.theme =
-    appData.theme === "dark"
-      ? "light"
-      : "dark";
-
-  applyTheme();
-
-  saveData();
-
-}
-
-
-/* =========================
-   ROUTINE HELPERS
-========================= */
-
-function reps(max, percentage) {
-
-  if (!max) return 6;
-
-  return Math.max(
-    3,
-    Math.round(max * percentage)
-  );
-
-}
-
-
-function pushExercise(p) {
-
-  if (p.pushups < 8) {
-
-    return {
-      name: "Incline push-ups",
-      sets: 3,
-      reps: 8,
-      tag: "Push"
-    };
-
-  }
-
-  return {
-    name: "Push-ups",
-    sets: p.level === "hard" ? 4 : 3,
-    reps: reps(p.pushups, .5),
-    tag: "Push"
-  };
-
-}
-
-
-function pullExercise(p) {
-
-  if (p.pullups <= 0) {
-
-    return {
-      name: "Australian rows",
-      sets: 3,
-      reps: 8,
-      tag: "Pull"
-    };
-
-  }
-
-  return {
-    name: "Pull-ups",
-    sets: 3,
-    reps: reps(p.pullups, .5),
-    tag: "Pull"
-  };
-
-}
-
-
-function dipExercise(p) {
-
-  if (p.dips <= 0) {
-
-    return {
-      name: "Assisted dips",
-      sets: 3,
-      reps: 8,
-      tag: "Push"
-    };
-
-  }
-
-  return {
-    name: "Dips",
-    sets: 3,
-    reps: reps(p.dips, .5),
-    tag: "Push"
-  };
-
-}
-
-
-function legExercise(p) {
-
-  return {
-    name: "Bodyweight squats",
-    sets: 3,
-    reps: Math.max(10, reps(p.squats, .5)),
-    tag: "Legs"
-  };
-
-}
-
-
-function plankExercise(p) {
-
-  return {
-    name: "Plank",
-    sets: 3,
-    reps: Math.max(
-      20,
-      Math.round((p.plank || 30) * .5)
-    ) + " sec",
-    tag: "Core"
-  };
-
-}
-
-
-function lsitExercise(p) {
-
-  const levels = [
-    ["Tuck hold", "10–15 sec"],
-    ["Tuck L-sit", "10–20 sec"],
-    ["L-sit", "5–15 sec"],
-    ["L-sit", "10–20 sec"],
-    ["L-sit", "15–30 sec"]
-  ];
-
-  const current = levels[p.lsit];
-
-  return {
-    name: current[0],
-    sets: 3,
-    reps: current[1],
-    tag: "L-sit"
-  };
-
-}
-
-
-function handstandExercise(p) {
-
-  const exercises = [
-
-    ["Wall walks", "3–5 reps"],
-
-    ["Handstand kick-ups", "3–5 pogingen"],
-
-    ["Handstand tegen muur", "15–30 sec"],
-
-    ["Vrije handstand oefenen", "10–30 sec"],
-
-    ["Handstand controle", "20–40 sec"]
-
-  ];
-
-  const current =
-    exercises[p.handstandLevel];
-
-  return {
-    name: current[0],
-    sets: 4,
-    reps: current[1],
-    tag: "Handstand"
-  };
-
-}
-
-
-function plancheExercise(p) {
-
-  const exercises = [
-
-    ["Planche lean voorbereiding", "10–15 sec"],
-
-    ["Planche lean", "10–20 sec"],
-
-    ["Frog stand", "10–20 sec"],
-
-    ["Tuck planche", "5–12 sec"],
-
-    ["Advanced tuck planche", "5–10 sec"]
-
-  ];
-
-  const current =
-    exercises[p.planche];
-
-  return {
-    name: current[0],
-    sets: 3,
-    reps: current[1],
-    tag: "Planche"
-  };
-
-}
-
-
-function hollowBody() {
-
-  return {
-    name: "Hollow body hold",
-    sets: 3,
-    reps: "15–30 sec",
-    tag: "Core"
-  };
-
-}
-
-
-function scapularPulls() {
-
-  return {
-    name: "Scapular pull-ups",
-    sets: 3,
-    reps: 6,
-    tag: "Pull"
-  };
-
-}
-
-
-function lunges() {
-
-  return {
-    name: "Lunges",
-    sets: 3,
-    reps: "8–12 per been",
-    tag: "Legs"
-  };
-
-}
-
-
-/* =========================
-   ROUTINE TYPES
-========================= */
-
-function dayTypes(days) {
-
-  if (days === 2)
-    return ["full", "full"];
-
-  if (days === 3)
-    return ["push", "pull", "legs"];
-
-  if (days === 4)
-    return ["push", "pull", "legs", "skills"];
-
-  return [
-    "push",
-    "pull",
-    "legs",
-    "skills",
-    "full"
-  ];
-
-}
-
-
-/* =========================
-   DAG MAKEN
-========================= */
-
-function createDay(type) {
-
-  const p = appData.profile;
-
-  if (type === "push") {
-
-    return [
-      handstandExercise(p),
-      pushExercise(p),
-      dipExercise(p),
-      plancheExercise(p),
-      plankExercise(p)
-    ];
-
-  }
-
-  if (type === "pull") {
-
-    return [
-      pullExercise(p),
-      scapularPulls(),
-      lsitExercise(p),
-      hollowBody()
-    ];
-
-  }
-
-  if (type === "legs") {
-
-    return [
-      legExercise(p),
-      lunges(),
-      plankExercise(p),
-      lsitExercise(p)
-    ];
-
-  }
-
-  if (type === "skills") {
-
-    return [
-      handstandExercise(p),
-      plancheExercise(p),
-      lsitExercise(p),
-      hollowBody()
-    ];
-
-  }
-
-  return [
-    pushExercise(p),
-    pullExercise(p),
-    legExercise(p),
-    lsitExercise(p),
-    handstandExercise(p)
-  ];
-
-}
-
-
-/* =========================
-   ROUTINE RENDEREN
-========================= */
-
-function generateRoutine() {
-
-  const types =
-    dayTypes(appData.profile.days);
-
-  let html = "";
-
-  types.forEach((type, index) => {
-
-    let title = "";
-
-    if (type === "push")
-      title = "Push + Skills";
-
-    if (type === "pull")
-      title = "Pull + Core";
-
-    if (type === "legs")
-      title = "Legs + Core";
-
-    if (type === "skills")
-      title = "Calisthenics Skills";
-
-    if (type === "full")
-      title = "Full Body";
-
-    const exercises =
-      createDay(type);
-
-    html += `
-      <div class="card day">
-
-        <div class="dayHeader">
-
-          <h2>
-            Dag ${index + 1} — ${title}
-          </h2>
-
-          <span class="tag">
-            ${type}
-          </span>
-
-        </div>
-
-        ${exercises.map(ex => `
-
-          <div class="exercise">
-
-            <div class="exerciseName">
-              ${ex.name}
-            </div>
-
-            <div class="details">
-              ${ex.sets} sets × ${ex.reps}
-            </div>
-
-            <span class="tag">
-              ${ex.tag}
-            </span>
-
-          </div>
-
-        `).join("")}
-
-      </div>
-    `;
-
-  });
-
-  document.getElementById("routine").innerHTML =
-    html;
-
-}
-
-
-/* =========================
-   TAKEN
-========================= */
-
-function createTasks() {
-
-  const today =
-    new Date().toISOString().slice(0, 10);
-
-  if (
-    appData.tasks.length &&
-    appData.tasks[0].date === today
-  ) {
-    return;
-  }
-
-  const type =
-    dayTypes(appData.profile.days)
-      [new Date().getDay() % appData.profile.days];
-
-  const exercises =
-    createDay(type);
-
-  appData.tasks =
-    exercises.map((exercise, index) => ({
-      id: index,
-      date: today,
-      name: exercise.name,
-      details:
-        exercise.sets +
-        " sets × " +
-        exercise.reps,
-      xp: 25,
-      done: false
-    }));
-
-  saveData();
-
-  renderTasks();
-
-}
-
-
-function renderTasks() {
-
-  const container =
-    document.getElementById("tasks");
-
-  if (!appData.tasks.length) {
-
-    container.innerHTML =
-      `<div class="message">
-        Geen taken voor vandaag.
-      </div>`;
-
-    return;
-
-  }
-
-  container.innerHTML =
-    appData.tasks.map(task => `
-
-      <div class="task ${task.done ? "done" : ""}">
-
-        <input
-          type="checkbox"
-          ${task.done ? "checked" : ""}
-          onchange="completeTask(${task.id})"
-        >
-
-        <div class="taskInfo">
-
-          <div class="taskName">
-            ${task.name}
-          </div>
-
-          <div class="taskDetails">
-            ${task.details}
-          </div>
-
-        </div>
-
-        <div class="xp">
-          +${task.xp} XP
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-function completeTask(id) {
-
-  const task =
-    appData.tasks.find(t => t.id === id);
-
-  if (!task || task.done) return;
-
-  task.done = true;
-
-  appData.xp += task.xp;
-
-  appData.completed++;
-
-  updateStreak();
-
-  saveData();
-
-  renderTasks();
-
-  updateUI();
-
-  if (
-    appData.tasks.every(t => t.done)
-  ) {
-
-    setTimeout(() => {
-
-      alert(
-        "🔥 Alle taken voltooid! Goed bezig!"
-      );
-
-    }, 100);
-
-  }
-
-}
-
-
-/* =========================
-   STREAK
-========================= */
-
-function updateStreak() {
-
-  const today =
-    new Date().toISOString().slice(0, 10);
-
-  if (
-    appData.lastCompletedDate === today
-  ) {
-    return;
-  }
-
-  appData.streak++;
-
-  appData.lastCompletedDate =
-    today;
-
-}
-
-
-/* =========================
-   XP / LEVEL
-========================= */
-
-function getLevel() {
-
-  return Math.floor(
-    appData.xp / 250
-  ) + 1;
-
-}
-
-
-/* =========================
-   LEADERBOARD
-========================= */
-
-function renderLeaderboard() {
-
-  let players = [
-
+const npcs = [
     {
-      name: appData.name,
-      xp: appData.xp,
-      you: true
+        name: "Alex",
+        x: 700,
+        y: 900,
+        color: "#3498db",
+        text: "Hey! Kun je mij helpen? Ik ben iets kwijtgeraakt."
     },
-
-    ...appData.friends
-
-  ];
-
-  players.sort(
-    (a, b) => b.xp - a.xp
-  );
-
-  document.getElementById(
-    "leaderboard"
-  ).innerHTML = players.map(
-    (player, index) => `
-
-      <div class="player">
-
-        <div class="rank">
-          #${index + 1}
-        </div>
-
-        <div class="playerName">
-          ${player.name}
-          ${player.you ? " 👤" : ""}
-        </div>
-
-        <div class="playerXP">
-          ⭐ ${player.xp}
-        </div>
-
-      </div>
-
-    `
-  ).join("");
-
-}
-
-
-function addFriend() {
-
-  const name =
-    document.getElementById("friendName")
-      .value.trim();
-
-  const xp =
-    Number(
-      document.getElementById("friendXP").value
-    ) || 0;
-
-  if (!name) {
-    alert("Vul een naam in.");
-    return;
-  }
-
-  appData.friends.push({
-    name,
-    xp
-  });
-
-  saveData();
-
-  document.getElementById(
-    "friendName"
-  ).value = "";
-
-  document.getElementById(
-    "friendXP"
-  ).value = "";
-
-  renderLeaderboard();
-
-}
-
+    {
+        name: "Sam",
+        x: 1800,
+        y: 1100,
+        color: "#e67e22",
+        text: "Welkom in onze stad! Er is hier veel te ontdekken."
+    },
+    {
+        name: "Mila",
+        x: 2300,
+        y: 2300,
+        color: "#9b59b6",
+        text: "Ik heb gehoord dat er ergens een geheime plek is..."
+    }
+];
 
 /* =========================
-   HOME
+   DRAWING
 ========================= */
 
-function renderHomeTasks() {
+function drawWorld() {
 
-  const container =
-    document.getElementById("homeTasks");
+    ctx.fillStyle = "#67b857";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  const first =
-    appData.tasks.slice(0, 3);
+    /* Wegen */
 
-  container.innerHTML =
-    first.map(task => `
+    ctx.fillStyle = "#777";
 
-      <div class="task ${task.done ? "done" : ""}">
-
-        <input
-          type="checkbox"
-          ${task.done ? "checked" : ""}
-          onchange="completeTask(${task.id})"
-        >
-
-        <div class="taskInfo">
-
-          <div class="taskName">
-            ${task.name}
-          </div>
-
-          <div class="taskDetails">
-            ${task.details}
-          </div>
-
-        </div>
-
-        <div class="xp">
-          +${task.xp}
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-function updateHome() {
-
-  const p =
-    appData.profile;
-
-  document.getElementById(
-    "homeHandstand"
-  ).textContent =
-    p.handstand + " sec";
-
-  document.getElementById(
-    "homePlanche"
-  ).textContent =
-    "Niveau " + p.planche + "/4";
-
-  document.getElementById(
-    "homeLsit"
-  ).textContent =
-    "Niveau " + p.lsit + "/4";
-
-  document.getElementById(
-    "homePullups"
-  ).textContent =
-    p.pullups + " reps";
-
-  renderHomeTasks();
-
-  const completed =
-    appData.tasks.filter(t => t.done).length;
-
-  const total =
-    appData.tasks.length;
-
-  const percent =
-    total
-      ? Math.round(completed / total * 100)
-      : 0;
-
-  document.getElementById(
-    "homeProgress"
-  ).style.width =
-    percent + "%";
-
-  document.getElementById(
-    "homeProgressText"
-  ).textContent =
-    `${completed}/${total} taken voltooid (${percent}%)`;
-
-  document.getElementById(
-    "todayMessage"
-  ).textContent =
-    total
-      ? "Maak je taken af en verdien XP."
-      : "Je hebt vandaag geen taken.";
-}
-
-
-/* =========================
-   UI
-========================= */
-
-function updateUI() {
-
-  const level =
-    getLevel();
-
-  document.getElementById(
-    "userName"
-  ).textContent =
-    appData.name;
-
-  document.getElementById(
-    "headerXP"
-  ).textContent =
-    appData.xp;
-
-  document.getElementById(
-    "totalXP"
-  ).textContent =
-    appData.xp;
-
-  document.getElementById(
-    "levelNumber"
-  ).textContent =
-    level;
-
-  document.getElementById(
-    "streakNumber"
-  ).textContent =
-    appData.streak;
-
-  document.getElementById(
-    "completedNumber"
-  ).textContent =
-    appData.completed;
-
-  const completed =
-    appData.tasks.filter(t => t.done).length;
-
-  const total =
-    appData.tasks.length;
-
-  const percent =
-    total
-      ? completed / total * 100
-      : 0;
-
-  document.getElementById(
-    "taskProgress"
-  ).style.width =
-    percent + "%";
-
-  document.getElementById(
-    "taskProgressText"
-  ).textContent =
-    `${completed} van ${total} taken voltooid`;
-
-  updateHome();
-
-  renderLeaderboard();
-
-}
-
-
-/* =========================
-   RESET
-========================= */
-
-function resetEverything() {
-
-  const confirmReset =
-    confirm(
-      "Weet je zeker dat je alles wilt wissen?"
+    ctx.fillRect(
+        -camera.x,
+        1300 - camera.y,
+        world.width,
+        180
     );
 
-  if (!confirmReset) return;
+    ctx.fillRect(
+        1350 - camera.x,
+        -camera.y,
+        180,
+        world.height
+    );
 
-  localStorage.removeItem(
-    "fitroutineApp"
-  );
+    /* Water */
 
-  location.reload();
+    ctx.fillStyle = "#4fa3d1";
 
+    ctx.fillRect(
+        2500 - camera.x,
+        -camera.y,
+        500,
+        900
+    );
+
+    /* Buildings */
+
+    buildings.forEach(b => {
+
+        ctx.fillStyle = "#333";
+
+        ctx.fillRect(
+            b.x - camera.x + 8,
+            b.y - camera.y + 8,
+            b.w,
+            b.h
+        );
+
+        ctx.fillStyle = b.color;
+
+        ctx.fillRect(
+            b.x - camera.x,
+            b.y - camera.y,
+            b.w,
+            b.h
+        );
+
+        /* Windows */
+
+        ctx.fillStyle = "#ffe28a";
+
+        for (let x = b.x + 30; x < b.x + b.w - 20; x += 70) {
+            for (let y = b.y + 30; y < b.y + b.h - 20; y += 70) {
+
+                ctx.fillRect(
+                    x - camera.x,
+                    y - camera.y,
+                    25,
+                    30
+                );
+            }
+        }
+    });
+
+    /* Trees */
+
+    trees.forEach(t => {
+
+        ctx.fillStyle = "#654321";
+
+        ctx.fillRect(
+            t.x - camera.x - 4,
+            t.y - camera.y,
+            8,
+            t.size
+        );
+
+        ctx.fillStyle = "#26733a";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            t.x - camera.x,
+            t.y - camera.y,
+            t.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    });
+
+    /* NPCs */
+
+    npcs.forEach(npc => {
+
+        ctx.fillStyle = npc.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            npc.x - camera.x,
+            npc.y - camera.y,
+            18,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        ctx.fillStyle = "white";
+        ctx.font = "bold 13px Arial";
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            npc.name,
+            npc.x - camera.x,
+            npc.y - camera.y - 27
+        );
+    });
+
+    /* Player */
+
+    ctx.fillStyle = "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x - camera.x,
+        player.y - camera.y,
+        player.size / 2 + 3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle = "#ffcc66";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x - camera.x,
+        player.y - camera.y,
+        player.size / 2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle = "white";
+    ctx.font = "bold 13px Arial";
+
+    ctx.fillText(
+        player.name,
+        player.x - camera.x,
+        player.y - camera.y - 25
+    );
 }
 
+/* =========================
+   MOVEMENT
+========================= */
+
+function updatePlayer() {
+
+    if (dialogueOpen) return;
+
+    let dx = 0;
+    let dy = 0;
+
+    if (keys["w"] || keys["arrowup"]) dy--;
+    if (keys["s"] || keys["arrowdown"]) dy++;
+    if (keys["a"] || keys["arrowleft"]) dx--;
+    if (keys["d"] || keys["arrowright"]) dx++;
+
+    if (dx !== 0 || dy !== 0) {
+
+        const length = Math.sqrt(dx * dx + dy * dy);
+
+        dx /= length;
+        dy /= length;
+
+        let speed = player.speed;
+
+        if (keys["shift"] && player.energy > 0) {
+            speed = player.sprintSpeed;
+            player.energy -= 0.8;
+        } else {
+            player.energy += 0.4;
+        }
+
+        player.energy = Math.max(
+            0,
+            Math.min(100, player.energy)
+        );
+
+        player.x += dx * speed;
+        player.y += dy * speed;
+    }
+
+    /* World boundaries */
+
+    player.x = Math.max(
+        20,
+        Math.min(world.width - 20, player.x)
+    );
+
+    player.y = Math.max(
+        20,
+        Math.min(world.height - 20, player.y)
+    );
+}
+
+/* =========================
+   CAMERA
+========================= */
+
+function updateCamera() {
+
+    camera.x = player.x - canvas.width / 2;
+    camera.y = player.y - canvas.height / 2;
+
+    camera.x = Math.max(
+        0,
+        Math.min(
+            world.width - canvas.width,
+            camera.x
+        )
+    );
+
+    camera.y = Math.max(
+        0,
+        Math.min(
+            world.height - canvas.height,
+            camera.y
+        )
+    );
+}
+
+/* =========================
+   NPC INTERACTION
+========================= */
+
+function getNearbyNPC() {
+
+    let closest = null;
+    let distance = Infinity;
+
+    npcs.forEach(npc => {
+
+        const dx = npc.x - player.x;
+        const dy = npc.y - player.y;
+
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < distance) {
+            distance = d;
+            closest = npc;
+        }
+    });
+
+    if (distance < 70) {
+        return closest;
+    }
+
+    return null;
+}
+
+function interact() {
+
+    if (dialogueOpen) return;
+
+    const npc = getNearbyNPC();
+
+    if (!npc) return;
+
+    currentNPC = npc;
+
+    document.getElementById("dialogueName").textContent =
+        npc.name;
+
+    if (!quest.started) {
+
+        document.getElementById("dialogueText").textContent =
+            npc.text;
+
+        quest.started = true;
+
+        document.getElementById("questText").textContent =
+            "Ga naar Sam om de quest te vervolgen.";
+
+    } else if (
+        quest.started &&
+        npc.name === "Sam" &&
+        !quest.completed
+    ) {
+
+        document.getElementById("dialogueText").textContent =
+            "Goed gedaan! Hier is je beloning.";
+
+        player.money += quest.reward;
+        player.xp += 100;
+
+        quest.completed = true;
+
+        document.getElementById("questText").textContent =
+            "✅ Quest voltooid!";
+
+        saveGame();
+
+    } else {
+
+        document.getElementById("dialogueText").textContent =
+            npc.text;
+    }
+
+    dialogueOpen = true;
+
+    document.getElementById("dialogue").style.display =
+        "block";
+}
+
+function closeDialogue() {
+
+    dialogueOpen = false;
+
+    document.getElementById("dialogue").style.display =
+        "none";
+}
+
+document.getElementById("dialogueButton").onclick =
+    closeDialogue;
+
+/* =========================
+   HUD
+========================= */
+
+function updateHUD() {
+
+    document.getElementById("playerName").textContent =
+        player.name;
+
+    document.getElementById("money").textContent =
+        player.money;
+
+    document.getElementById("xp").textContent =
+        player.xp;
+
+    document.getElementById("healthBar").style.width =
+        player.health + "%";
+
+    document.getElementById("energyBar").style.width =
+        player.energy + "%";
+
+    const npc = getNearbyNPC();
+
+    document.getElementById("interaction").style.display =
+        npc && !dialogueOpen ? "block" : "none";
+}
+
+/* =========================
+   SAVE SYSTEM
+========================= */
+
+function saveGame() {
+
+    const saveData = {
+        player,
+        quest
+    };
+
+    localStorage.setItem(
+        "openWorldSave",
+        JSON.stringify(saveData)
+    );
+}
+
+function loadGame() {
+
+    const saved =
+        localStorage.getItem("openWorldSave");
+
+    if (!saved) return;
+
+    try {
+
+        const data = JSON.parse(saved);
+
+        player = data.player || player;
+        quest = data.quest || quest;
+
+    } catch (error) {
+
+        console.log("Save kon niet worden geladen.");
+    }
+}
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function gameLoop() {
+
+    updatePlayer();
+    updateCamera();
+
+    drawWorld();
+    updateHUD();
+
+    requestAnimationFrame(gameLoop);
+}
 
 /* =========================
    START
 ========================= */
 
-loadData();
+document.getElementById("startButton").onclick = () => {
 
-if (appData.name) {
+    const name =
+        document.getElementById("nameInput").value.trim();
 
-  enterApp();
+    if (name.length > 0) {
+        player.name = name;
+    }
 
-}
+    loadGame();
 
+    /* Naam uit input behouden */
+    player.name = name || player.name;
+
+    document.getElementById("startScreen").style.display =
+        "none";
+
+    saveGame();
+
+    gameLoop();
+};
+
+/* Autosave */
+
+setInterval(() => {
+
+    if (
+        document.getElementById("startScreen").style.display
+        === "none"
+    ) {
+        saveGame();
+    }
+
+}, 5000);
 </script>
 
 </body>
