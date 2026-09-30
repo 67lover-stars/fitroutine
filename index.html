@@ -3,359 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FitRoutine Custom</title>
+
+<title>SideQuest</title>
 
 <style>
 :root{
-  --bg:#f4f7fb;
-  --card:#ffffff;
-  --text:#172033;
-  --muted:#6b7280;
-  --primary:#6c5ce7;
-  --primary2:#8b7cf6;
+  --bg:#10131c;
+  --card:#191e2a;
+  --text:#fff;
+  --muted:#9ca3af;
+  --accent:#7c5cff;
   --green:#20bf6b;
-  --red:#eb4d4b;
-  --border:#e5e7eb;
-  --shadow:0 10px 30px rgba(30,40,80,.08);
+  --border:#2d3444;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
 }
 
-body.dark{
-  --bg:#10131c;
-  --card:#191e2a;
-  --text:#f5f7ff;
-  --muted:#9ca3af;
-  --border:#2c3444;
-  --shadow:0 10px 30px rgba(0,0,0,.25);
+.container{
+  width:100%;
+  max-width:600px;
+  margin:auto;
+  padding:20px;
 }
 
-button,input,select,textarea{
-  font:inherit;
-}
-
-button{
-  border:0;
-  cursor:pointer;
-}
-
-.hidden{display:none!important}
-
-.app{
-  min-height:100vh;
-  padding-bottom:85px;
-}
-
-header{
-  padding:22px 18px 12px;
+.header{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  margin-bottom:20px;
 }
 
 .logo{
-  font-size:24px;
+  font-size:26px;
   font-weight:900;
 }
 
 .logo span{
-  color:var(--primary);
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:10px 16px 30px;
+  color:var(--accent);
 }
 
 .card{
   background:var(--card);
   border:1px solid var(--border);
-  border-radius:22px;
-  padding:18px;
+  border-radius:24px;
+  padding:22px;
   margin-bottom:16px;
-  box-shadow:var(--shadow);
 }
 
-.hero{
-  background:linear-gradient(135deg,var(--primary),var(--primary2));
-  color:white;
-  border:0;
+.quest-card{
+  text-align:center;
+  padding:35px 20px;
+  background:
+    radial-gradient(circle at top,#30245e 0%,var(--card) 55%);
 }
 
-.hero h1{
-  margin:0 0 6px;
+.quest-icon{
+  font-size:60px;
+  margin-bottom:10px;
 }
 
-.hero p{
-  margin:0;
-  opacity:.9;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-
-.stat{
-  padding:16px;
-  border-radius:18px;
-  background:var(--bg);
-  border:1px solid var(--border);
-}
-
-.stat strong{
-  display:block;
-  font-size:26px;
-  margin-bottom:3px;
-}
-
-.stat small{
-  color:var(--muted);
-}
-
-h2,h3{
-  margin-top:0;
-}
-
-label{
-  display:block;
-  margin:13px 0 6px;
-  font-weight:700;
-}
-
-input,select,textarea{
-  width:100%;
-  padding:13px;
-  border-radius:13px;
-  border:1px solid var(--border);
-  background:var(--bg);
-  color:var(--text);
-  outline:none;
-}
-
-textarea{
-  min-height:90px;
-  resize:vertical;
-}
-
-input:focus,select:focus,textarea:focus{
-  border-color:var(--primary);
-}
-
-.btn{
-  width:100%;
-  padding:13px 16px;
-  border-radius:13px;
-  background:var(--primary);
-  color:white;
-  font-weight:800;
-  margin-top:12px;
-}
-
-.btn.secondary{
-  background:var(--bg);
-  color:var(--text);
-  border:1px solid var(--border);
-}
-
-.btn.green{
-  background:var(--green);
-}
-
-.btn.red{
-  background:var(--red);
-}
-
-.row{
-  display:flex;
-  gap:10px;
-}
-
-.row>*{
-  flex:1;
-}
-
-.exercise{
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:15px;
-  margin-bottom:11px;
-  background:var(--card);
-}
-
-.exercise-top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.exercise-name{
-  font-size:18px;
-  font-weight:800;
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:999px;
-  background:rgba(108,92,231,.12);
-  color:var(--primary);
-  font-size:12px;
-  font-weight:800;
-}
-
-.exercise-details{
-  color:var(--muted);
-  margin:8px 0;
-}
-
-.done{
-  opacity:.65;
-}
-
-.done .exercise-name{
-  text-decoration:line-through;
-}
-
-.small-btn{
-  padding:8px 10px;
-  border-radius:10px;
-  background:var(--bg);
-  color:var(--text);
-  border:1px solid var(--border);
-  margin-left:5px;
-}
-
-.nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:72px;
-  background:var(--card);
-  border-top:1px solid var(--border);
-  display:flex;
-  justify-content:center;
-  z-index:20;
-}
-
-.nav-inner{
-  width:100%;
-  max-width:700px;
-  display:flex;
-}
-
-.nav button{
-  flex:1;
-  background:transparent;
-  color:var(--muted);
-  font-size:11px;
-}
-
-.nav button.active{
-  color:var(--primary);
+.quest-title{
+  font-size:28px;
   font-weight:900;
+  margin-bottom:10px;
 }
 
-.nav-icon{
-  display:block;
-  font-size:21px;
-  margin-bottom:3px;
+.quest-description{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.xp{
+  display:inline-block;
+  margin-top:16px;
+  padding:8px 14px;
+  border-radius:99px;
+  background:rgba(124,92,255,.15);
+  color:#b8aaff;
+  font-weight:bold;
+}
+
+.timer{
+  font-size:42px;
+  font-weight:900;
+  text-align:center;
+  margin:10px 0;
 }
 
 .progress{
   height:12px;
-  background:var(--bg);
+  background:#292f3d;
   border-radius:99px;
   overflow:hidden;
-  margin-top:10px;
 }
 
-.progress div{
+.progress-bar{
   height:100%;
-  background:linear-gradient(90deg,var(--primary),var(--primary2));
   width:0%;
+  background:var(--accent);
   transition:.3s;
 }
 
-.empty{
-  text-align:center;
-  padding:30px 10px;
-  color:var(--muted);
-}
-
-.login{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.login-card{
+button{
   width:100%;
-  max-width:480px;
-  background:var(--card);
-  padding:28px;
-  border-radius:28px;
-  box-shadow:var(--shadow);
+  border:0;
+  border-radius:14px;
+  padding:15px;
+  margin-top:12px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--accent);
+  color:white;
+}
+
+.green{
+  background:var(--green);
+  color:white;
+}
+
+.secondary{
+  background:#252b38;
+  color:white;
   border:1px solid var(--border);
 }
 
-.big-logo{
-  font-size:38px;
-  font-weight:900;
-  margin-bottom:5px;
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
 }
 
-.big-logo span{
-  color:var(--primary);
+.stat{
+  text-align:center;
+  padding:15px 5px;
+  background:#151923;
+  border-radius:16px;
 }
 
-.check{
+.stat strong{
+  display:block;
+  font-size:24px;
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.quest-list{
+  max-height:300px;
+  overflow:auto;
+}
+
+.history-item{
   display:flex;
-  align-items:center;
-  gap:12px;
+  justify-content:space-between;
   padding:12px;
-  background:var(--bg);
-  border-radius:13px;
-  margin-top:8px;
+  border-bottom:1px solid var(--border);
 }
 
-.check input{
-  width:20px;
-  height:20px;
+.completed{
+  color:var(--green);
+}
+
+.next{
+  text-align:center;
+  color:var(--muted);
+  margin-top:12px;
 }
 
 .notice{
   padding:12px;
-  border-radius:13px;
-  background:rgba(32,191,107,.1);
-  color:var(--green);
-  margin-bottom:14px;
-  font-weight:700;
+  border-radius:12px;
+  background:#202638;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
 }
 
-@media(max-width:600px){
-  .grid{grid-template-columns:1fr 1fr}
-  .row{flex-direction:column}
-}
+@media(max-width:400px){
+  .quest-title{
+    font-size:24px;
+  }
 
-@media(min-width:800px){
-  .app{padding-bottom:20px}
-  .nav{
-    position:static;
-    border-top:0;
-    border-bottom:1px solid var(--border);
+  .timer{
+    font-size:34px;
   }
 }
 </style>
@@ -363,1033 +208,523 @@ input:focus,select:focus,textarea:focus{
 
 <body>
 
-<div id="loginScreen" class="login">
-  <div class="login-card">
-    <div class="big-logo">Fit<span>Routine</span></div>
-    <p style="color:var(--muted)">
-      Maak je eigen trainingsroutine en houd je voortgang bij.
-    </p>
+<div class="container">
 
-    <label>Jouw naam</label>
-    <input id="loginName" placeholder="Bijv. Alex">
-
-    <label>Trainingsniveau</label>
-    <select id="loginLevel">
-      <option>Beginner</option>
-      <option>Gemiddeld</option>
-      <option>Gevorderd</option>
-    </select>
-
-    <label>Jouw doel</label>
-    <select id="loginGoal">
-      <option>Consistent trainen</option>
-      <option>Sterker worden</option>
-      <option>Calisthenics skills</option>
-      <option>Conditie verbeteren</option>
-      <option>Mobiliteit</option>
-    </select>
-
-    <button class="btn" onclick="createProfile()">Start FitRoutine 🚀</button>
-  </div>
-</div>
-
-<div id="app" class="app hidden">
-
-<header>
-  <div class="logo">Fit<span>Routine</span></div>
-  <button class="small-btn" onclick="showPage('settings')">⚙️</button>
-</header>
-
-<main class="container">
-
-<!-- HOME -->
-<section id="page-home">
-
-  <div class="card hero">
-    <h1>Hey <span id="homeName"></span> 👋</h1>
-    <p>Maak vandaag een kleine stap vooruit.</p>
+  <div class="header">
+    <div class="logo">
+      Side<span>Quest</span> ⚡
+    </div>
   </div>
 
-  <div class="grid">
-    <div class="stat">
-      <strong id="xp">0</strong>
-      <small>XP</small>
+  <div class="card quest-card">
+
+    <div class="quest-icon" id="questIcon">🎯</div>
+
+    <div class="quest-title" id="questTitle">
+      Klaar voor je eerste quest?
     </div>
 
-    <div class="stat">
-      <strong id="levelNumber">1</strong>
-      <small>Level</small>
+    <div class="quest-description" id="questDescription">
+      Start de timer om iedere 60 minuten een nieuwe Side Quest te krijgen.
     </div>
 
-    <div class="stat">
-      <strong id="streak">0</strong>
-      <small>Dagen streak</small>
+    <div class="xp" id="questXP">
+      +25 XP
     </div>
 
-    <div class="stat">
-      <strong id="completedCount">0</strong>
-      <small>Voltooid</small>
-    </div>
+    <button
+      class="primary"
+      id="completeButton"
+      onclick="completeQuest()">
+      Quest voltooien
+    </button>
+
+    <button
+      class="secondary"
+      onclick="skipQuest()">
+      Overslaan
+    </button>
+
   </div>
 
   <div class="card">
-    <h3>Vandaag</h3>
-    <div id="todayPreview"></div>
-  </div>
 
-  <div class="card">
-    <h3>Level progress</h3>
-    <div id="levelText"></div>
+    <h3>⏱️ Volgende Side Quest</h3>
+
+    <div class="timer" id="timer">
+      60:00
+    </div>
+
     <div class="progress">
-      <div id="levelBar"></div>
+      <div class="progress-bar" id="progressBar"></div>
     </div>
-  </div>
 
-</section>
+    <div class="next" id="nextText">
+      Timer loopt nog niet.
+    </div>
 
-<!-- ROUTINE -->
-<section id="page-routine" class="hidden">
+    <button
+      class="primary"
+      id="startButton"
+      onclick="startTimer()">
+      ▶ Start SideQuest
+    </button>
 
-  <div class="card">
-    <h2>📅 Mijn routine</h2>
-    <p style="color:var(--muted)">
-      Kies een dag en bouw zelf je training.
-    </p>
-
-    <select id="routineDay" onchange="renderRoutineBuilder()">
-      <option>Maandag</option>
-      <option>Dinsdag</option>
-      <option>Woensdag</option>
-      <option>Donderdag</option>
-      <option>Vrijdag</option>
-      <option>Zaterdag</option>
-      <option>Zondag</option>
-    </select>
   </div>
 
   <div class="card">
-    <h3>Oefening toevoegen</h3>
 
-    <label>Oefening</label>
-    <select id="routineExercise"></select>
+    <h3>📊 Mijn stats</h3>
 
-    <label>Sets</label>
-    <input id="routineSets" type="number" min="1" value="3">
+    <div class="stats">
 
-    <label>Reps / seconden</label>
-    <input id="routineReps" placeholder="Bijv. 10 of 30 sec">
-
-    <button class="btn" onclick="addToRoutine()">+ Toevoegen</button>
-  </div>
-
-  <div class="card">
-    <h3>Training van deze dag</h3>
-    <div id="routineList"></div>
-  </div>
-
-</section>
-
-<!-- TODAY -->
-<section id="page-today" class="hidden">
-
-  <div class="card hero">
-    <h2>🔥 Vandaag trainen</h2>
-    <p id="todayDay"></p>
-  </div>
-
-  <div class="card">
-    <div id="todayExercises"></div>
-  </div>
-
-</section>
-
-<!-- EXERCISES -->
-<section id="page-exercises" class="hidden">
-
-  <div class="card">
-    <h2>💪 Mijn oefeningen</h2>
-    <p style="color:var(--muted)">
-      Voeg je eigen oefeningen toe.
-    </p>
-
-    <label>Naam</label>
-    <input id="exerciseName" placeholder="Bijv. Push-ups">
-
-    <label>Categorie</label>
-    <select id="exerciseCategory">
-      <option>Push</option>
-      <option>Pull</option>
-      <option>Legs</option>
-      <option>Core</option>
-      <option>Skills</option>
-      <option>Mobiliteit</option>
-      <option>Overig</option>
-    </select>
-
-    <label>Beschrijving</label>
-    <textarea id="exerciseDescription"
-      placeholder="Bijv. Rustig uitvoeren met goede techniek."></textarea>
-
-    <button class="btn" onclick="addExercise()">+ Oefening opslaan</button>
-  </div>
-
-  <div class="card">
-    <h3>Mijn oefeningen</h3>
-    <div id="exerciseList"></div>
-  </div>
-
-</section>
-
-<!-- PROGRESS -->
-<section id="page-progress" class="hidden">
-
-  <div class="card">
-    <h2>📈 Mijn voortgang</h2>
-
-    <div class="grid">
       <div class="stat">
-        <strong id="progressXP">0</strong>
-        <small>XP</small>
+        <strong id="xp">0</strong>
+        <span>XP</span>
       </div>
 
       <div class="stat">
-        <strong id="progressSessions">0</strong>
-        <small>Trainingsdagen</small>
+        <strong id="completed">0</strong>
+        <span>Voltooid</span>
+      </div>
+
+      <div class="stat">
+        <strong id="level">1</strong>
+        <span>Level</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3>📜 Quest geschiedenis</h3>
+
+    <div id="history" class="quest-list">
+      <div class="notice">
+        Je voltooide quests verschijnen hier.
       </div>
     </div>
+
   </div>
 
   <div class="card">
-    <h3>Voltooide trainingen</h3>
-    <div id="history"></div>
-  </div>
 
-</section>
+    <h3>ℹ️ Hoe werkt het?</h3>
 
-<!-- SETTINGS -->
-<section id="page-settings" class="hidden">
-
-  <div class="card">
-    <h2>⚙️ Instellingen</h2>
-
-    <label>Naam</label>
-    <input id="settingsName">
-
-    <label>Leeftijd (optioneel)</label>
-    <input id="settingsAge" type="number" min="10" max="100">
-
-    <label>Niveau</label>
-    <select id="settingsLevel">
-      <option>Beginner</option>
-      <option>Gemiddeld</option>
-      <option>Gevorderd</option>
-    </select>
-
-    <label>Doel</label>
-    <select id="settingsGoal">
-      <option>Consistent trainen</option>
-      <option>Sterker worden</option>
-      <option>Calisthenics skills</option>
-      <option>Conditie verbeteren</option>
-      <option>Mobiliteit</option>
-    </select>
-
-    <button class="btn" onclick="saveSettings()">💾 Opslaan</button>
-  </div>
-
-  <div class="card">
-    <h3>🎨 Thema</h3>
-    <button class="btn secondary" onclick="toggleDark()">
-      Licht / donker wisselen
-    </button>
-  </div>
-
-  <div class="card">
-    <h3>💾 Data</h3>
-
-    <button class="btn secondary" onclick="exportData()">
-      📤 Exporteren
-    </button>
-
-    <label>Importeer JSON</label>
-    <input type="file" id="importFile" accept=".json"
-      onchange="importData(event)">
-
-    <button class="btn red" onclick="resetEverything()">
-      Alles wissen
-    </button>
-  </div>
-
-</section>
-
-</main>
-
-<nav class="nav">
-  <div class="nav-inner">
-
-    <button onclick="showPage('home')" id="nav-home">
-      <span class="nav-icon">🏠</span>Home
-    </button>
-
-    <button onclick="showPage('routine')" id="nav-routine">
-      <span class="nav-icon">📅</span>Routine
-    </button>
-
-    <button onclick="showPage('today')" id="nav-today">
-      <span class="nav-icon">🔥</span>Vandaag
-    </button>
-
-    <button onclick="showPage('exercises')" id="nav-exercises">
-      <span class="nav-icon">💪</span>Oefeningen
-    </button>
-
-    <button onclick="showPage('progress')" id="nav-progress">
-      <span class="nav-icon">📈</span>Progress
-    </button>
+    <div class="notice">
+      Zolang deze pagina open blijft, komt er iedere 60 minuten
+      een nieuwe Side Quest. Je kunt een quest altijd overslaan.
+      De app gebruikt alleen je browseropslag om je voortgang te bewaren.
+    </div>
 
   </div>
-</nav>
 
 </div>
 
 <script>
-const DAYS = [
-  "Maandag",
-  "Dinsdag",
-  "Woensdag",
-  "Donderdag",
-  "Vrijdag",
-  "Zaterdag",
-  "Zondag"
-];
 
-const defaultExercises = [
+const quests = [
+
   {
-    id:"pushups",
-    name:"Push-ups",
-    category:"Push",
-    description:"Voer rustige herhalingen uit met goede controle."
+    icon:"💪",
+    title:"Push-up Quest",
+    description:"Doe een rustige set push-ups met goede techniek. Stop als iets pijn doet.",
+    xp:25
   },
+
   {
-    id:"squats",
-    name:"Squats",
-    category:"Legs",
-    description:"Zak gecontroleerd en houd je houding stabiel."
+    icon:"🦵",
+    title:"Leg Quest",
+    description:"Doe 10 rustige squats en neem daarna even pauze.",
+    xp:20
   },
+
   {
-    id:"lunges",
-    name:"Lunges",
-    category:"Legs",
-    description:"Wissel links en rechts af."
+    icon:"🧘",
+    title:"Mobility Quest",
+    description:"Doe 2 minuten rustige mobiliteit voor je schouders en benen.",
+    xp:20
   },
+
   {
-    id:"plank",
-    name:"Plank",
-    category:"Core",
-    description:"Houd je lichaam stabiel en adem rustig."
+    icon:"🚶",
+    title:"Walk Quest",
+    description:"Loop een paar minuten rond en kom even achter je scherm vandaan.",
+    xp:20
   },
+
   {
-    id:"rows",
-    name:"Australian Rows",
-    category:"Pull",
-    description:"Trek gecontroleerd richting het steunpunt."
+    icon:"💧",
+    title:"Hydration Quest",
+    description:"Neem even een drinkpauze.",
+    xp:15
   },
+
   {
-    id:"pullups",
-    name:"Pull-ups",
-    category:"Pull",
-    description:"Gebruik alleen een veilige setup."
+    icon:"🧹",
+    title:"Room Quest",
+    description:"Ruim 5 dingen op in je kamer of werkplek.",
+    xp:15
   },
+
   {
-    id:"dips",
-    name:"Dips",
-    category:"Push",
-    description:"Beweeg gecontroleerd en stop bij pijn."
+    icon:"🧍",
+    title:"Posture Quest",
+    description:"Sta even op, beweeg rustig en verander van houding.",
+    xp:15
   },
+
   {
-    id:"handstand",
-    name:"Handstand oefenen",
-    category:"Skills",
-    description:"Oefen alleen op een veilige plek."
+    icon:"🫁",
+    title:"Reset Quest",
+    description:"Neem 2 minuten rust en adem rustig terwijl je even niet naar je scherm kijkt.",
+    xp:15
   },
+
   {
-    id:"mobility",
-    name:"Mobiliteit",
-    category:"Mobiliteit",
-    description:"Rustige bewegingen zonder forceren."
+    icon:"🎯",
+    title:"Balance Quest",
+    description:"Oefen rustig je balans gedurende ongeveer 30 seconden per kant.",
+    xp:20
+  },
+
+  {
+    icon:"🤸",
+    title:"Stretch Quest",
+    description:"Doe een paar rustige stretches zonder te forceren.",
+    xp:20
   }
+
 ];
 
-let data = {
-  profile:null,
-  exercises:[],
-  routines:{},
-  completed:{},
-  history:[],
+let state = {
   xp:0,
-  streak:0,
-  lastCompleted:null,
-  dark:false
+  completed:0,
+  history:[],
+  currentQuest:null,
+  timerRunning:false,
+  remaining:3600,
+  lastQuestTime:null
 };
 
+let timerInterval=null;
+
 function save(){
-  localStorage.setItem("fitroutine_custom",JSON.stringify(data));
+
+  localStorage.setItem(
+    "sidequest_data",
+    JSON.stringify(state)
+  );
+
 }
 
 function load(){
-  const saved = localStorage.getItem("fitroutine_custom");
+
+  const saved =
+    localStorage.getItem("sidequest_data");
 
   if(saved){
-    try{
-      data = Object.assign(data,JSON.parse(saved));
-    }catch(e){
-      console.log("Data kon niet geladen worden.");
-    }
-  }
-
-  if(!Array.isArray(data.exercises)){
-    data.exercises=[];
-  }
-
-  if(!data.routines){
-    data.routines={};
-  }
-
-  if(!data.completed){
-    data.completed={};
-  }
-
-  if(!Array.isArray(data.history)){
-    data.history=[];
-  }
-
-  if(data.dark){
-    document.body.classList.add("dark");
-  }
-}
-
-function createProfile(){
-
-  const name = document.getElementById("loginName").value.trim();
-
-  if(!name){
-    alert("Vul eerst je naam in.");
-    return;
-  }
-
-  data.profile={
-    name:name,
-    age:"",
-    level:document.getElementById("loginLevel").value,
-    goal:document.getElementById("loginGoal").value
-  };
-
-  save();
-  startApp();
-}
-
-function startApp(){
-
-  if(!data.profile){
-    document.getElementById("loginScreen").classList.remove("hidden");
-    document.getElementById("app").classList.add("hidden");
-    return;
-  }
-
-  document.getElementById("loginScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-
-  renderAll();
-}
-
-function renderAll(){
-
-  if(data.profile){
-    document.getElementById("homeName").textContent=data.profile.name;
-  }
-
-  renderStats();
-  renderTodayPreview();
-  renderRoutineSelect();
-  renderExerciseSelect();
-  renderRoutineBuilder();
-  renderExercises();
-  renderToday();
-  renderProgress();
-  renderSettings();
-}
-
-function showPage(page){
-
-  document.querySelectorAll("main section").forEach(section=>{
-    section.classList.add("hidden");
-  });
-
-  const target=document.getElementById("page-"+page);
-
-  if(target){
-    target.classList.remove("hidden");
-  }
-
-  document.querySelectorAll(".nav button").forEach(btn=>{
-    btn.classList.remove("active");
-  });
-
-  const nav=document.getElementById("nav-"+page);
-
-  if(nav){
-    nav.classList.add("active");
-  }
-
-  if(page==="today"){
-    renderToday();
-  }
-
-  if(page==="progress"){
-    renderProgress();
-  }
-}
-
-function renderStats(){
-
-  document.getElementById("xp").textContent=data.xp;
-
-  const level=Math.floor(data.xp/100)+1;
-
-  document.getElementById("levelNumber").textContent=level;
-  document.getElementById("streak").textContent=data.streak;
-  document.getElementById("completedCount").textContent=
-    Object.values(data.completed).filter(Boolean).length;
-
-  const currentXP=data.xp%100;
-
-  document.getElementById("levelText").textContent=
-    currentXP+" / 100 XP naar level "+(level+1);
-
-  document.getElementById("levelBar").style.width=
-    currentXP+"%";
-}
-
-function getToday(){
-
-  const jsDay=new Date().getDay();
-
-  if(jsDay===0)return "Zondag";
-
-  return DAYS[jsDay-1];
-}
-
-function getRoutine(day){
-
-  if(!data.routines[day]){
-    data.routines[day]=[];
-  }
-
-  return data.routines[day];
-}
-
-function renderTodayPreview(){
-
-  const day=getToday();
-  const routine=getRoutine(day);
-
-  const box=document.getElementById("todayPreview");
-
-  if(!routine.length){
-    box.innerHTML=
-      `<div class="empty">
-        Nog geen oefeningen voor ${day}.<br>
-        Ga naar Routine om er een te maken.
-      </div>`;
-    return;
-  }
-
-  box.innerHTML=`
-    <p><b>${day}</b> · ${routine.length} oefeningen</p>
-    <button class="btn" onclick="showPage('today')">
-      Start training →
-    </button>
-  `;
-}
-
-function renderToday(){
-
-  const day=getToday();
-
-  document.getElementById("todayDay").textContent=
-    "Vandaag is het "+day;
-
-  const routine=getRoutine(day);
-  const box=document.getElementById("todayExercises");
-
-  if(!routine.length){
-    box.innerHTML=`
-      <div class="empty">
-        Je hebt voor vandaag nog geen routine.
-        <br><br>
-        <button class="btn" onclick="showPage('routine')">
-          Routine maken
-        </button>
-      </div>`;
-    return;
-  }
-
-  box.innerHTML="";
-
-  routine.forEach((item,index)=>{
-
-    const ex=findExercise(item.exerciseId);
-
-    if(!ex)return;
-
-    const key=completionKey(day,index);
-    const isDone=!!data.completed[key];
-
-    const div=document.createElement("div");
-
-    div.className="exercise "+(isDone?"done":"");
-
-    div.innerHTML=`
-      <div class="exercise-top">
-        <div>
-          <div class="exercise-name">${escapeHTML(ex.name)}</div>
-          <span class="badge">${escapeHTML(ex.category)}</span>
-        </div>
-      </div>
-
-      <div class="exercise-details">
-        ${item.sets} sets · ${escapeHTML(item.reps || "-")}
-      </div>
-
-      <div style="color:var(--muted);font-size:14px">
-        ${escapeHTML(ex.description || "")}
-      </div>
-
-      <label class="check">
-        <input type="checkbox"
-          ${isDone?"checked":""}
-          onchange="toggleExercise('${key}',${index},'${day}')">
-        <span>${isDone?"Voltooid!":"Ik heb deze oefening gedaan"}</span>
-      </label>
-    `;
-
-    box.appendChild(div);
-  });
-}
-
-function completionKey(day,index){
-  return new Date().toISOString().slice(0,10)+"_"+day+"_"+index;
-}
-
-function toggleExercise(key,index,day){
-
-  const wasDone=!!data.completed[key];
-
-  data.completed[key]=!wasDone;
-
-  if(!wasDone){
-
-    data.xp+=25;
-
-    updateStreak();
-
-    if(!data.history.some(x=>x.date===todayISO())){
-      data.history.push({
-        date:todayISO(),
-        day:day
-      });
-    }
-  }else{
-    data.xp=Math.max(0,data.xp-25);
-  }
-
-  save();
-  renderAll();
-}
-
-function updateStreak(){
-
-  const today=todayISO();
-
-  if(data.lastCompleted===today){
-    return;
-  }
-
-  const yesterday=new Date();
-  yesterday.setDate(yesterday.getDate()-1);
-
-  const yesterdayISO=yesterday.toISOString().slice(0,10);
-
-  if(data.lastCompleted===yesterdayISO){
-    data.streak++;
-  }else{
-    data.streak=1;
-  }
-
-  data.lastCompleted=today;
-}
-
-function todayISO(){
-  return new Date().toISOString().slice(0,10);
-}
-
-function renderRoutineSelect(){
-
-  const select=document.getElementById("routineDay");
-
-  if(!select)return;
-
-  if(!select.value){
-    select.value=getToday();
-  }
-}
-
-function renderExerciseSelect(){
-
-  const select=document.getElementById("routineExercise");
-
-  if(!select)return;
-
-  select.innerHTML="";
-
-  const all=[...defaultExercises,...data.exercises];
-
-  all.forEach(ex=>{
-    const option=document.createElement("option");
-
-    option.value=ex.id;
-    option.textContent=ex.name;
-
-    select.appendChild(option);
-  });
-}
-
-function findExercise(id){
-
-  return [...defaultExercises,...data.exercises]
-    .find(ex=>ex.id===id);
-}
-
-function addToRoutine(){
-
-  const day=document.getElementById("routineDay").value;
-  const exerciseId=document.getElementById("routineExercise").value;
-  const sets=parseInt(document.getElementById("routineSets").value)||1;
-  const reps=document.getElementById("routineReps").value.trim();
-
-  if(!exerciseId){
-    alert("Kies een oefening.");
-    return;
-  }
-
-  if(!data.routines[day]){
-    data.routines[day]=[];
-  }
-
-  data.routines[day].push({
-    exerciseId:exerciseId,
-    sets:sets,
-    reps:reps
-  });
-
-  save();
-
-  document.getElementById("routineReps").value="";
-
-  renderRoutineBuilder();
-  renderTodayPreview();
-}
-
-function renderRoutineBuilder(){
-
-  const day=document.getElementById("routineDay").value;
-  const routine=getRoutine(day);
-  const box=document.getElementById("routineList");
-
-  if(!routine.length){
-    box.innerHTML=`
-      <div class="empty">
-        Nog geen oefeningen op ${day}.
-      </div>`;
-    return;
-  }
-
-  box.innerHTML="";
-
-  routine.forEach((item,index)=>{
-
-    const ex=findExercise(item.exerciseId);
-
-    if(!ex)return;
-
-    const div=document.createElement("div");
-
-    div.className="exercise";
-
-    div.innerHTML=`
-      <div class="exercise-top">
-        <div>
-          <div class="exercise-name">${escapeHTML(ex.name)}</div>
-          <span class="badge">${escapeHTML(ex.category)}</span>
-        </div>
-
-        <button class="small-btn"
-          onclick="removeFromRoutine('${day}',${index})">
-          🗑️
-        </button>
-      </div>
-
-      <div class="exercise-details">
-        ${item.sets} sets · ${escapeHTML(item.reps || "-")}
-      </div>
-    `;
-
-    box.appendChild(div);
-  });
-}
-
-function removeFromRoutine(day,index){
-
-  if(!confirm("Deze oefening verwijderen?"))return;
-
-  data.routines[day].splice(index,1);
-
-  save();
-
-  renderRoutineBuilder();
-  renderTodayPreview();
-  renderToday();
-}
-
-function addExercise(){
-
-  const name=document.getElementById("exerciseName").value.trim();
-
-  if(!name){
-    alert("Vul een naam in.");
-    return;
-  }
-
-  const exercise={
-    id:"custom_"+Date.now(),
-    name:name,
-    category:document.getElementById("exerciseCategory").value,
-    description:document.getElementById("exerciseDescription").value.trim()
-  };
-
-  data.exercises.push(exercise);
-
-  save();
-
-  document.getElementById("exerciseName").value="";
-  document.getElementById("exerciseDescription").value="";
-
-  renderExerciseSelect();
-  renderExercises();
-}
-
-function renderExercises(){
-
-  const box=document.getElementById("exerciseList");
-
-  if(!data.exercises.length){
-    box.innerHTML=`
-      <div class="empty">
-        Je hebt nog geen eigen oefeningen toegevoegd.
-      </div>`;
-    return;
-  }
-
-  box.innerHTML="";
-
-  data.exercises.forEach((ex,index)=>{
-
-    const div=document.createElement("div");
-
-    div.className="exercise";
-
-    div.innerHTML=`
-      <div class="exercise-top">
-        <div>
-          <div class="exercise-name">${escapeHTML(ex.name)}</div>
-          <span class="badge">${escapeHTML(ex.category)}</span>
-        </div>
-
-        <button class="small-btn"
-          onclick="deleteExercise(${index})">
-          🗑️
-        </button>
-      </div>
-
-      <div class="exercise-details">
-        ${escapeHTML(ex.description || "Geen beschrijving")}
-      </div>
-    `;
-
-    box.appendChild(div);
-  });
-}
-
-function deleteExercise(index){
-
-  if(!confirm("Deze eigen oefening verwijderen?"))return;
-
-  const id=data.exercises[index].id;
-
-  data.exercises.splice(index,1);
-
-  Object.keys(data.routines).forEach(day=>{
-    data.routines[day]=data.routines[day]
-      .filter(item=>item.exerciseId!==id);
-  });
-
-  save();
-
-  renderAll();
-}
-
-function renderProgress(){
-
-  document.getElementById("progressXP").textContent=data.xp;
-
-  document.getElementById("progressSessions").textContent=
-    data.history.length;
-
-  const box=document.getElementById("history");
-
-  if(!data.history.length){
-    box.innerHTML=`
-      <div class="empty">
-        Je hebt nog geen training afgerond.
-      </div>`;
-    return;
-  }
-
-  box.innerHTML="";
-
-  [...data.history].reverse().forEach(item=>{
-
-    const div=document.createElement("div");
-
-    div.className="exercise";
-
-    div.innerHTML=`
-      <b>🔥 ${escapeHTML(item.day)}</b>
-      <div class="exercise-details">
-        ${escapeHTML(item.date)}
-      </div>
-    `;
-
-    box.appendChild(div);
-  });
-}
-
-function renderSettings(){
-
-  if(!data.profile)return;
-
-  document.getElementById("settingsName").value=
-    data.profile.name || "";
-
-  document.getElementById("settingsAge").value=
-    data.profile.age || "";
-
-  document.getElementById("settingsLevel").value=
-    data.profile.level || "Beginner";
-
-  document.getElementById("settingsGoal").value=
-    data.profile.goal || "Consistent trainen";
-}
-
-function saveSettings(){
-
-  data.profile.name=
-    document.getElementById("settingsName").value.trim() ||
-    data.profile.name;
-
-  data.profile.age=
-    document.getElementById("settingsAge").value;
-
-  data.profile.level=
-    document.getElementById("settingsLevel").value;
-
-  data.profile.goal=
-    document.getElementById("settingsGoal").value;
-
-  save();
-
-  renderAll();
-
-  alert("Instellingen opgeslagen! ✅");
-}
-
-function toggleDark(){
-
-  data.dark=!data.dark;
-
-  document.body.classList.toggle("dark",data.dark);
-
-  save();
-}
-
-function exportData(){
-
-  const blob=new Blob(
-    [JSON.stringify(data,null,2)],
-    {type:"application/json"}
-  );
-
-  const url=URL.createObjectURL(blob);
-
-  const a=document.createElement("a");
-
-  a.href=url;
-  a.download="fitroutine-backup.json";
-
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-
-function importData(event){
-
-  const file=event.target.files[0];
-
-  if(!file)return;
-
-  const reader=new FileReader();
-
-  reader.onload=function(){
 
     try{
 
-      const imported=JSON.parse(reader.result);
+      state = Object.assign(
+        state,
+        JSON.parse(saved)
+      );
 
-      data=Object.assign(data,imported);
+    }catch(error){
 
-      save();
-      renderAll();
+      console.log("Data kon niet worden geladen.");
 
-      alert("Backup geladen! ✅");
-
-    }catch(e){
-
-      alert("Dit bestand is geen geldige FitRoutine backup.");
     }
-  };
 
-  reader.readAsText(file);
+  }
+
 }
 
-function resetEverything(){
+function randomQuest(){
 
-  if(!confirm(
-    "Weet je zeker dat je alle FitRoutine gegevens wilt wissen?"
-  ))return;
+  const random =
+    Math.floor(Math.random()*quests.length);
 
-  localStorage.removeItem("fitroutine_custom");
+  state.currentQuest = {
+    ...quests[random],
+    id:Date.now()
+  };
 
-  location.reload();
+  save();
+
+  renderQuest();
+
+}
+
+function renderQuest(){
+
+  if(!state.currentQuest){
+
+    return;
+
+  }
+
+  document.getElementById("questIcon").textContent =
+    state.currentQuest.icon;
+
+  document.getElementById("questTitle").textContent =
+    state.currentQuest.title;
+
+  document.getElementById("questDescription").textContent =
+    state.currentQuest.description;
+
+  document.getElementById("questXP").textContent =
+    "+" + state.currentQuest.xp + " XP";
+
+}
+
+function startTimer(){
+
+  if(state.timerRunning){
+    return;
+  }
+
+  state.timerRunning=true;
+
+  document.getElementById("startButton")
+    .textContent="⏳ Timer loopt...";
+
+  if(!state.currentQuest){
+
+    randomQuest();
+
+  }
+
+  if(!state.remaining || state.remaining<=0){
+
+    state.remaining=3600;
+
+  }
+
+  save();
+
+  updateTimer();
+
+  timerInterval=setInterval(()=>{
+
+    state.remaining--;
+
+    updateTimer();
+
+    if(state.remaining<=0){
+
+      newQuest();
+
+    }
+
+  },1000);
+
+}
+
+function newQuest(){
+
+  state.remaining=3600;
+
+  randomQuest();
+
+  showNotification();
+
+  save();
+
+  updateTimer();
+
+}
+
+function updateTimer(){
+
+  const minutes =
+    Math.floor(state.remaining/60);
+
+  const seconds =
+    state.remaining%60;
+
+  document.getElementById("timer").textContent =
+    String(minutes).padStart(2,"0")
+    + ":" +
+    String(seconds).padStart(2,"0");
+
+  const progress =
+    ((3600-state.remaining)/3600)*100;
+
+  document.getElementById("progressBar").style.width =
+    Math.max(0,Math.min(100,progress))+"%";
+
+  if(state.remaining>0){
+
+    document.getElementById("nextText").textContent =
+      "Nieuwe quest over "+minutes+" minuten.";
+
+  }
+
+}
+
+function completeQuest(){
+
+  if(!state.currentQuest){
+
+    randomQuest();
+    return;
+
+  }
+
+  state.xp += state.currentQuest.xp;
+
+  state.completed++;
+
+  state.history.push({
+
+    title:state.currentQuest.title,
+
+    xp:state.currentQuest.xp,
+
+    time:new Date().toLocaleTimeString(
+      "nl-NL",
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    )
+
+  });
+
+  if(state.history.length>30){
+
+    state.history.shift();
+
+  }
+
+  save();
+
+  updateStats();
+
+  renderHistory();
+
+  document.getElementById("completeButton")
+    .textContent="✅ Voltooid!";
+
+  setTimeout(()=>{
+
+    document.getElementById("completeButton")
+      .textContent="Quest voltooien";
+
+  },1500);
+
+}
+
+function skipQuest(){
+
+  if(!state.currentQuest){
+
+    randomQuest();
+    return;
+
+  }
+
+  randomQuest();
+
+}
+
+function updateStats(){
+
+  document.getElementById("xp").textContent =
+    state.xp;
+
+  document.getElementById("completed").textContent =
+    state.completed;
+
+  const level =
+    Math.floor(state.xp/100)+1;
+
+  document.getElementById("level").textContent =
+    level;
+
+}
+
+function renderHistory(){
+
+  const box =
+    document.getElementById("history");
+
+  if(!state.history.length){
+
+    box.innerHTML =
+      `<div class="notice">
+        Nog geen voltooide quests.
+      </div>`;
+
+    return;
+
+  }
+
+  box.innerHTML="";
+
+  [...state.history]
+    .reverse()
+    .forEach(item=>{
+
+      const div =
+        document.createElement("div");
+
+      div.className="history-item";
+
+      div.innerHTML=`
+
+        <div>
+          <b>${escapeHTML(item.title)}</b>
+          <br>
+          <small>${item.time}</small>
+        </div>
+
+        <div class="completed">
+          +${item.xp} XP
+        </div>
+
+      `;
+
+      box.appendChild(div);
+
+    });
+
+}
+
+function showNotification(){
+
+  if(
+    "Notification" in window &&
+    Notification.permission==="granted"
+  ){
+
+    new Notification(
+      "Nieuwe Side Quest! ⚡",
+      {
+        body:state.currentQuest.title
+      }
+    );
+
+  }
+
+}
+
+function requestNotifications(){
+
+  if(
+    "Notification" in window &&
+    Notification.permission==="default"
+  ){
+
+    Notification.requestPermission();
+
+  }
+
 }
 
 function escapeHTML(value){
@@ -1400,10 +735,21 @@ function escapeHTML(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+
 }
 
 load();
-startApp();
+
+updateStats();
+renderHistory();
+
+if(state.currentQuest){
+
+  renderQuest();
+
+}
+
+requestNotifications();
 
 </script>
 
