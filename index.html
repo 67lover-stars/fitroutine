@@ -3,18 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SideQuest</title>
+<title>SideQuest ⚡</title>
 
 <style>
 :root{
-  --bg:#10131c;
-  --card:#191e2a;
-  --text:#fff;
-  --muted:#9ca3af;
-  --accent:#7c5cff;
-  --green:#20bf6b;
-  --border:#2d3444;
+  --bg:#080b12;
+  --bg2:#111624;
+  --card:rgba(20,25,38,.88);
+  --card2:#171d2d;
+  --text:#f7f8ff;
+  --muted:#8d96aa;
+  --purple:#7657ff;
+  --purple2:#a18cff;
+  --green:#25d486;
+  --yellow:#ffd166;
+  --red:#ff5d73;
+  --border:rgba(255,255,255,.08);
 }
 
 *{
@@ -23,184 +27,407 @@
 
 body{
   margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
+  min-height:100vh;
+  font-family:Inter,Arial,sans-serif;
   color:var(--text);
-}
-
-.container{
-  width:100%;
-  max-width:600px;
-  margin:auto;
-  padding:20px;
-}
-
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.logo{
-  font-size:26px;
-  font-weight:900;
-}
-
-.logo span{
-  color:var(--accent);
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:22px;
-  margin-bottom:16px;
-}
-
-.quest-card{
-  text-align:center;
-  padding:35px 20px;
   background:
-    radial-gradient(circle at top,#30245e 0%,var(--card) 55%);
-}
-
-.quest-icon{
-  font-size:60px;
-  margin-bottom:10px;
-}
-
-.quest-title{
-  font-size:28px;
-  font-weight:900;
-  margin-bottom:10px;
-}
-
-.quest-description{
-  color:var(--muted);
-  line-height:1.5;
-}
-
-.xp{
-  display:inline-block;
-  margin-top:16px;
-  padding:8px 14px;
-  border-radius:99px;
-  background:rgba(124,92,255,.15);
-  color:#b8aaff;
-  font-weight:bold;
-}
-
-.timer{
-  font-size:42px;
-  font-weight:900;
-  text-align:center;
-  margin:10px 0;
-}
-
-.progress{
-  height:12px;
-  background:#292f3d;
-  border-radius:99px;
-  overflow:hidden;
-}
-
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:var(--accent);
-  transition:.3s;
+    radial-gradient(circle at 20% 0%,#24185b 0,transparent 32%),
+    radial-gradient(circle at 100% 20%,#132c4e 0,transparent 28%),
+    linear-gradient(145deg,var(--bg),var(--bg2));
 }
 
 button{
+  font:inherit;
+}
+
+.app{
   width:100%;
-  border:0;
-  border-radius:14px;
-  padding:15px;
-  margin-top:12px;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
+  max-width:720px;
+  margin:auto;
+  padding:20px 16px 40px;
 }
 
-.primary{
-  background:var(--accent);
-  color:white;
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
 }
 
-.green{
+.logo{
+  font-size:25px;
+  font-weight:950;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  color:var(--purple2);
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
   background:var(--green);
-  color:white;
+  box-shadow:0 0 12px var(--green);
 }
 
-.secondary{
-  background:#252b38;
-  color:white;
+.hero{
+  position:relative;
+  overflow:hidden;
   border:1px solid var(--border);
+  border-radius:30px;
+  padding:26px 22px;
+  background:
+    linear-gradient(135deg,
+      rgba(118,87,255,.25),
+      rgba(20,25,38,.9));
+  box-shadow:0 25px 70px rgba(0,0,0,.28);
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  right:-80px;
+  top:-80px;
+  background:var(--purple);
+  filter:blur(70px);
+  opacity:.25;
+}
+
+.hero-small{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:7px;
+}
+
+.hero h1{
+  margin:0;
+  font-size:34px;
+  letter-spacing:-1.5px;
+}
+
+.hero p{
+  margin:8px 0 0;
+  color:#b4bbca;
 }
 
 .stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
+  margin-top:15px;
 }
 
 .stat{
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px 8px;
   text-align:center;
-  padding:15px 5px;
-  background:#151923;
-  border-radius:16px;
 }
 
-.stat strong{
-  display:block;
-  font-size:24px;
+.stat-number{
+  font-size:22px;
+  font-weight:900;
 }
 
-.stat span{
+.stat-label{
   color:var(--muted);
-  font-size:12px;
+  font-size:11px;
+  margin-top:3px;
 }
 
-.quest-list{
-  max-height:300px;
-  overflow:auto;
+.quest{
+  margin-top:16px;
+  border:1px solid var(--border);
+  border-radius:30px;
+  padding:25px 20px;
+  background:linear-gradient(
+    145deg,
+    rgba(118,87,255,.17),
+    rgba(17,22,36,.96)
+  );
+  text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,.25);
 }
 
-.history-item{
+.quest-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(118,87,255,.14);
+  border:1px solid rgba(118,87,255,.25);
+  color:#b8adff;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+.quest-icon{
+  font-size:72px;
+  margin:18px 0 5px;
+  filter:drop-shadow(0 10px 20px rgba(118,87,255,.25));
+}
+
+.quest h2{
+  margin:0;
+  font-size:29px;
+  letter-spacing:-1px;
+}
+
+.quest-description{
+  max-width:480px;
+  margin:10px auto 0;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.reward{
+  display:inline-block;
+  margin-top:15px;
+  padding:8px 13px;
+  border-radius:999px;
+  color:#ffe49b;
+  background:rgba(255,209,102,.1);
+  border:1px solid rgba(255,209,102,.18);
+  font-weight:800;
+  font-size:13px;
+}
+
+.big-button{
+  width:100%;
+  margin-top:22px;
+  padding:17px;
+  border:0;
+  border-radius:17px;
+  color:white;
+  background:linear-gradient(135deg,var(--purple),#9279ff);
+  font-size:16px;
+  font-weight:900;
+  box-shadow:0 10px 30px rgba(118,87,255,.3);
+  cursor:pointer;
+  transition:.2s;
+}
+
+.big-button:active{
+  transform:scale(.98);
+}
+
+.big-button.done{
+  background:linear-gradient(135deg,#18b875,var(--green));
+}
+
+.skip{
+  background:transparent;
+  border:0;
+  color:var(--muted);
+  margin-top:12px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.timer-card{
+  margin-top:16px;
+  padding:20px;
+  border-radius:25px;
+  border:1px solid var(--border);
+  background:var(--card);
+}
+
+.timer-head{
   display:flex;
   justify-content:space-between;
-  padding:12px;
-  border-bottom:1px solid var(--border);
+  align-items:center;
+  margin-bottom:12px;
 }
 
-.completed{
+.timer-title{
+  font-weight:900;
+}
+
+.timer-state{
   color:var(--green);
+  font-size:12px;
+  font-weight:800;
+}
+
+.timer{
+  font-size:50px;
+  text-align:center;
+  font-weight:950;
+  letter-spacing:-2px;
+  margin:7px 0 14px;
+}
+
+.progress{
+  height:9px;
+  background:#242b3c;
+  border-radius:99px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--purple),var(--purple2));
+  border-radius:99px;
+  transition:width .5s linear;
 }
 
 .next{
   text-align:center;
   color:var(--muted);
-  margin-top:12px;
+  font-size:12px;
+  margin-top:11px;
 }
 
-.notice{
-  padding:12px;
-  border-radius:12px;
-  background:#202638;
+.xp-card{
+  margin-top:16px;
+  padding:20px;
+  border-radius:25px;
+  background:var(--card);
+  border:1px solid var(--border);
+}
+
+.xp-top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:9px;
+}
+
+.xp-top span{
   color:var(--muted);
   font-size:13px;
-  line-height:1.4;
 }
 
-@media(max-width:400px){
-  .quest-title{
-    font-size:24px;
+.xp-bar{
+  height:10px;
+  background:#242b3c;
+  border-radius:99px;
+  overflow:hidden;
+}
+
+.xp-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#6f5cff,#bd8cff);
+  transition:.4s;
+}
+
+.history{
+  margin-top:16px;
+  padding:20px;
+  border-radius:25px;
+  background:var(--card);
+  border:1px solid var(--border);
+}
+
+.history h3{
+  margin:0 0 13px;
+}
+
+.history-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.history-item:last-child{
+  border-bottom:0;
+}
+
+.history-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.history-icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:rgba(118,87,255,.12);
+}
+
+.history-name{
+  font-weight:750;
+  font-size:14px;
+}
+
+.history-time{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.history-xp{
+  color:var(--green);
+  font-weight:900;
+  font-size:13px;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translate(-50%,120px);
+  padding:14px 18px;
+  background:#20283a;
+  border:1px solid var(--border);
+  border-radius:15px;
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+  transition:.3s;
+  z-index:99;
+  font-size:14px;
+  font-weight:700;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+@media(max-width:480px){
+
+  .app{
+    padding:14px 12px 30px;
+  }
+
+  .hero h1{
+    font-size:29px;
+  }
+
+  .quest{
+    padding:22px 15px;
+  }
+
+  .quest-icon{
+    font-size:62px;
+  }
+
+  .quest h2{
+    font-size:25px;
   }
 
   .timer{
-    font-size:34px;
+    font-size:43px;
   }
 }
 </style>
@@ -208,122 +435,157 @@ button{
 
 <body>
 
-<div class="container">
+<div class="app">
 
-  <div class="header">
+  <div class="topbar">
     <div class="logo">
       Side<span>Quest</span> ⚡
     </div>
+
+    <div class="status">
+      <span class="status-dot"></span>
+      <span id="statusText">Klaar</span>
+    </div>
   </div>
 
-  <div class="card quest-card">
+  <div class="hero">
 
-    <div class="quest-icon" id="questIcon">🎯</div>
+    <div class="hero-small">JOUW DAGELIJKSE AVONTUUR</div>
 
-    <div class="quest-title" id="questTitle">
-      Klaar voor je eerste quest?
+    <h1>Maak je volgende move.</h1>
+
+    <p>
+      Eén klik. Eén quest. Daarna loopt alles automatisch.
+    </p>
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="stat-number" id="totalXP">0</div>
+        <div class="stat-label">XP</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-number" id="level">1</div>
+        <div class="stat-label">LEVEL</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-number" id="completed">0</div>
+        <div class="stat-label">QUESTS</div>
+      </div>
+
     </div>
+
+  </div>
+
+  <div class="quest">
+
+    <div class="quest-badge">
+      ⚡ SIDE QUEST
+    </div>
+
+    <div class="quest-icon" id="questIcon">
+      🚀
+    </div>
+
+    <h2 id="questTitle">
+      Start je avontuur
+    </h2>
 
     <div class="quest-description" id="questDescription">
-      Start de timer om iedere 60 minuten een nieuwe Side Quest te krijgen.
+      Klik één keer op de knop en je krijgt meteen je eerste Side Quest.
     </div>
 
-    <div class="xp" id="questXP">
-      +25 XP
+    <div class="reward" id="reward">
+      ⭐ +25 XP
     </div>
 
     <button
-      class="primary"
-      id="completeButton"
-      onclick="completeQuest()">
-      Quest voltooien
+      class="big-button"
+      id="mainButton"
+      onclick="mainAction()">
+      🚀 START SIDEQUEST
     </button>
 
     <button
-      class="secondary"
-      onclick="skipQuest()">
-      Overslaan
+      class="skip"
+      id="skipButton"
+      onclick="skipQuest()"
+      style="display:none">
+      Deze quest overslaan
     </button>
 
   </div>
 
-  <div class="card">
+  <div class="timer-card">
 
-    <h3>⏱️ Volgende Side Quest</h3>
+    <div class="timer-head">
+
+      <div class="timer-title">
+        ⏱️ Volgende Quest
+      </div>
+
+      <div class="timer-state" id="timerState">
+        NIET GESTART
+      </div>
+
+    </div>
 
     <div class="timer" id="timer">
       60:00
     </div>
 
     <div class="progress">
-      <div class="progress-bar" id="progressBar"></div>
+      <div
+        class="progress-bar"
+        id="timerBar">
+      </div>
     </div>
 
     <div class="next" id="nextText">
-      Timer loopt nog niet.
-    </div>
-
-    <button
-      class="primary"
-      id="startButton"
-      onclick="startTimer()">
-      ▶ Start SideQuest
-    </button>
-
-  </div>
-
-  <div class="card">
-
-    <h3>📊 Mijn stats</h3>
-
-    <div class="stats">
-
-      <div class="stat">
-        <strong id="xp">0</strong>
-        <span>XP</span>
-      </div>
-
-      <div class="stat">
-        <strong id="completed">0</strong>
-        <span>Voltooid</span>
-      </div>
-
-      <div class="stat">
-        <strong id="level">1</strong>
-        <span>Level</span>
-      </div>
-
+      Start om de automatische timer te activeren.
     </div>
 
   </div>
 
-  <div class="card">
+  <div class="xp-card">
 
-    <h3>📜 Quest geschiedenis</h3>
+    <div class="xp-top">
+      <b>⚡ Level Progress</b>
+      <span id="xpText">0 / 100 XP</span>
+    </div>
 
-    <div id="history" class="quest-list">
-      <div class="notice">
-        Je voltooide quests verschijnen hier.
+    <div class="xp-bar">
+      <div
+        class="xp-fill"
+        id="xpBar">
       </div>
     </div>
 
   </div>
 
-  <div class="card">
+  <div class="history">
 
-    <h3>ℹ️ Hoe werkt het?</h3>
+    <h3>📜 Recente quests</h3>
 
-    <div class="notice">
-      Zolang deze pagina open blijft, komt er iedere 60 minuten
-      een nieuwe Side Quest. Je kunt een quest altijd overslaan.
-      De app gebruikt alleen je browseropslag om je voortgang te bewaren.
+    <div id="historyList">
+      <div style="color:var(--muted);font-size:13px">
+        Nog geen quests voltooid.
+      </div>
     </div>
 
   </div>
 
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
+
+/* =========================
+   QUESTS
+========================= */
 
 const quests = [
 
@@ -344,14 +606,14 @@ const quests = [
   {
     icon:"🧘",
     title:"Mobility Quest",
-    description:"Doe 2 minuten rustige mobiliteit voor je schouders en benen.",
+    description:"Neem ongeveer 2 minuten voor rustige mobiliteit.",
     xp:20
   },
 
   {
     icon:"🚶",
     title:"Walk Quest",
-    description:"Loop een paar minuten rond en kom even achter je scherm vandaan.",
+    description:"Sta op en loop een paar minuten rond.",
     xp:20
   },
 
@@ -364,29 +626,29 @@ const quests = [
 
   {
     icon:"🧹",
-    title:"Room Quest",
+    title:"Clean Quest",
     description:"Ruim 5 dingen op in je kamer of werkplek.",
     xp:15
   },
 
   {
     icon:"🧍",
-    title:"Posture Quest",
-    description:"Sta even op, beweeg rustig en verander van houding.",
+    title:"Reset Quest",
+    description:"Sta even op en verander van houding.",
     xp:15
   },
 
   {
-    icon:"🫁",
-    title:"Reset Quest",
-    description:"Neem 2 minuten rust en adem rustig terwijl je even niet naar je scherm kijkt.",
-    xp:15
+    icon:"🌿",
+    title:"Fresh Air Quest",
+    description:"Ga, als dat veilig kan, even naar buiten of bij een raam staan.",
+    xp:20
   },
 
   {
     icon:"🎯",
-    title:"Balance Quest",
-    description:"Oefen rustig je balans gedurende ongeveer 30 seconden per kant.",
+    title:"Focus Quest",
+    description:"Doe 5 minuten één ding zonder afleiding.",
     xp:20
   },
 
@@ -395,48 +657,66 @@ const quests = [
     title:"Stretch Quest",
     description:"Doe een paar rustige stretches zonder te forceren.",
     xp:20
+  },
+
+  {
+    icon:"🫁",
+    title:"Reset Quest",
+    description:"Neem twee minuten rust en kijk even niet naar je scherm.",
+    xp:15
   }
 
 ];
 
+
+/* =========================
+   STATE
+========================= */
+
 let state = {
+
+  started:false,
+
   xp:0,
+
   completed:0,
-  history:[],
+
+  level:1,
+
   currentQuest:null,
-  timerRunning:false,
+
+  history:[],
+
   remaining:3600,
-  lastQuestTime:null
+
+  lastQuestId:null
+
 };
 
 let timerInterval=null;
 
-function save(){
 
-  localStorage.setItem(
-    "sidequest_data",
-    JSON.stringify(state)
-  );
-
-}
+/* =========================
+   LOAD
+========================= */
 
 function load(){
 
   const saved =
-    localStorage.getItem("sidequest_data");
+    localStorage.getItem("sidequest_v2");
 
   if(saved){
 
     try{
 
-      state = Object.assign(
+      state=Object.assign(
         state,
         JSON.parse(saved)
       );
 
-    }catch(error){
+    }catch(e){
 
-      console.log("Data kon niet worden geladen.");
+      console.log("Nieuwe save gestart.");
 
     }
 
@@ -444,68 +724,168 @@ function load(){
 
 }
 
-function randomQuest(){
 
-  const random =
-    Math.floor(Math.random()*quests.length);
+/* =========================
+   SAVE
+========================= */
 
-  state.currentQuest = {
-    ...quests[random],
-    id:Date.now()
-  };
+function save(){
+
+  localStorage.setItem(
+    "sidequest_v2",
+    JSON.stringify(state)
+  );
+
+}
+
+
+/* =========================
+   MAIN BUTTON
+========================= */
+
+function mainAction(){
+
+  /*
+    EERSTE KLIK:
+    - start app
+    - nieuwe quest
+    - timer automatisch starten
+  */
+
+  if(!state.started){
+
+    startApp();
+
+    return;
+
+  }
+
+  /*
+    Daarna:
+    quest voltooien
+  */
+
+  completeQuest();
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+function startApp(){
+
+  state.started=true;
+
+  state.remaining=3600;
+
+  generateQuest();
+
+  startTimer();
 
   save();
 
-  renderQuest();
+  showToast(
+    "🚀 SideQuest gestart!"
+  );
 
 }
+
+
+/* =========================
+   GENERATE QUEST
+========================= */
+
+function generateQuest(){
+
+  let available=quests.filter(
+    q=>q.title!==state.lastQuestId
+  );
+
+  if(!available.length){
+
+    available=quests;
+
+  }
+
+  const random=
+    Math.floor(
+      Math.random()*available.length
+    );
+
+  const quest=available[random];
+
+  state.currentQuest={
+    ...quest,
+    id:Date.now()
+  };
+
+  state.lastQuestId=quest.title;
+
+  renderQuest();
+
+  save();
+
+}
+
+
+/* =========================
+   RENDER QUEST
+========================= */
 
 function renderQuest(){
 
   if(!state.currentQuest){
-
     return;
-
   }
 
-  document.getElementById("questIcon").textContent =
+  document.getElementById("questIcon")
+    .textContent=
     state.currentQuest.icon;
 
-  document.getElementById("questTitle").textContent =
+  document.getElementById("questTitle")
+    .textContent=
     state.currentQuest.title;
 
-  document.getElementById("questDescription").textContent =
+  document.getElementById("questDescription")
+    .textContent=
     state.currentQuest.description;
 
-  document.getElementById("questXP").textContent =
-    "+" + state.currentQuest.xp + " XP";
+  document.getElementById("reward")
+    .textContent=
+    "⭐ +" +
+    state.currentQuest.xp +
+    " XP";
+
+  document.getElementById("mainButton")
+    .textContent=
+    "✅ QUEST VOLTOOIEN";
+
+  document.getElementById("mainButton")
+    .classList.remove("done");
+
+  document.getElementById("skipButton")
+    .style.display="block";
 
 }
 
+
+/* =========================
+   TIMER
+========================= */
+
 function startTimer(){
 
-  if(state.timerRunning){
+  if(timerInterval){
     return;
   }
 
-  state.timerRunning=true;
+  document.getElementById("statusText")
+    .textContent="Actief";
 
-  document.getElementById("startButton")
-    .textContent="⏳ Timer loopt...";
-
-  if(!state.currentQuest){
-
-    randomQuest();
-
-  }
-
-  if(!state.remaining || state.remaining<=0){
-
-    state.remaining=3600;
-
-  }
-
-  save();
+  document.getElementById("timerState")
+    .textContent="ACTIEF";
 
   updateTimer();
 
@@ -513,78 +893,113 @@ function startTimer(){
 
     state.remaining--;
 
-    updateTimer();
-
     if(state.remaining<=0){
 
-      newQuest();
+      nextQuest();
+
+      return;
 
     }
+
+    updateTimer();
+
+    save();
 
   },1000);
 
 }
 
-function newQuest(){
+
+/* =========================
+   NEXT QUEST
+========================= */
+
+function nextQuest(){
 
   state.remaining=3600;
 
-  randomQuest();
+  generateQuest();
 
-  showNotification();
-
-  save();
+  showToast(
+    "⚡ Nieuwe Side Quest!"
+  );
 
   updateTimer();
 
+  notify();
+
+  save();
+
 }
+
+
+/* =========================
+   TIMER UI
+========================= */
 
 function updateTimer(){
 
-  const minutes =
-    Math.floor(state.remaining/60);
+  const minutes=
+    Math.floor(
+      state.remaining/60
+    );
 
-  const seconds =
+  const seconds=
     state.remaining%60;
 
-  document.getElementById("timer").textContent =
+  document.getElementById("timer")
+    .textContent=
     String(minutes).padStart(2,"0")
     + ":" +
     String(seconds).padStart(2,"0");
 
-  const progress =
+  const progress=
     ((3600-state.remaining)/3600)*100;
 
-  document.getElementById("progressBar").style.width =
-    Math.max(0,Math.min(100,progress))+"%";
+  document.getElementById("timerBar")
+    .style.width=
+    progress+"%";
 
   if(state.remaining>0){
 
-    document.getElementById("nextText").textContent =
-      "Nieuwe quest over "+minutes+" minuten.";
+    document.getElementById("nextText")
+      .textContent=
+      "Nieuwe quest over " +
+      minutes +
+      " minuten.";
 
   }
 
 }
 
+
+/* =========================
+   COMPLETE
+========================= */
+
 function completeQuest(){
 
   if(!state.currentQuest){
-
-    randomQuest();
     return;
-
   }
 
-  state.xp += state.currentQuest.xp;
+  const quest=
+    state.currentQuest;
+
+  state.xp+=quest.xp;
 
   state.completed++;
 
+  state.level=
+    Math.floor(state.xp/100)+1;
+
   state.history.push({
 
-    title:state.currentQuest.title,
+    icon:quest.icon,
 
-    xp:state.currentQuest.xp,
+    title:quest.title,
+
+    xp:quest.xp,
 
     time:new Date().toLocaleTimeString(
       "nl-NL",
@@ -596,107 +1011,178 @@ function completeQuest(){
 
   });
 
-  if(state.history.length>30){
+  if(state.history.length>10){
 
     state.history.shift();
 
   }
 
-  save();
+  document.getElementById("mainButton")
+    .textContent=
+    "🎉 VOLTOOID!";
+
+  document.getElementById("mainButton")
+    .classList.add("done");
+
+  document.getElementById("skipButton")
+    .style.display="none";
+
+  showToast(
+    "🎉 Quest voltooid! +" +
+    quest.xp +
+    " XP"
+  );
 
   updateStats();
 
   renderHistory();
 
-  document.getElementById("completeButton")
-    .textContent="✅ Voltooid!";
-
-  setTimeout(()=>{
-
-    document.getElementById("completeButton")
-      .textContent="Quest voltooien";
-
-  },1500);
+  save();
 
 }
+
+
+/* =========================
+   SKIP
+========================= */
 
 function skipQuest(){
 
-  if(!state.currentQuest){
+  generateQuest();
 
-    randomQuest();
-    return;
-
-  }
-
-  randomQuest();
+  showToast(
+    "↪ Nieuwe quest gekozen"
+  );
 
 }
+
+
+/* =========================
+   STATS
+========================= */
 
 function updateStats(){
 
-  document.getElementById("xp").textContent =
+  document.getElementById("totalXP")
+    .textContent=
     state.xp;
 
-  document.getElementById("completed").textContent =
+  document.getElementById("completed")
+    .textContent=
     state.completed;
 
-  const level =
-    Math.floor(state.xp/100)+1;
+  document.getElementById("level")
+    .textContent=
+    state.level;
 
-  document.getElementById("level").textContent =
-    level;
+  const currentXP=
+    state.xp%100;
+
+  document.getElementById("xpText")
+    .textContent=
+    currentXP+
+    " / 100 XP";
+
+  document.getElementById("xpBar")
+    .style.width=
+    currentXP+"%";
 
 }
 
+
+/* =========================
+   HISTORY
+========================= */
+
 function renderHistory(){
 
-  const box =
-    document.getElementById("history");
+  const list=
+    document.getElementById("historyList");
 
   if(!state.history.length){
 
-    box.innerHTML =
-      `<div class="notice">
-        Nog geen voltooide quests.
+    list.innerHTML=
+      `<div style="color:var(--muted);font-size:13px">
+        Nog geen quests voltooid.
       </div>`;
 
     return;
 
   }
 
-  box.innerHTML="";
+  list.innerHTML="";
 
   [...state.history]
     .reverse()
     .forEach(item=>{
 
-      const div =
+      const div=
         document.createElement("div");
 
       div.className="history-item";
 
       div.innerHTML=`
 
-        <div>
-          <b>${escapeHTML(item.title)}</b>
-          <br>
-          <small>${item.time}</small>
+        <div class="history-left">
+
+          <div class="history-icon">
+            ${escapeHTML(item.icon)}
+          </div>
+
+          <div>
+
+            <div class="history-name">
+              ${escapeHTML(item.title)}
+            </div>
+
+            <div class="history-time">
+              ${escapeHTML(item.time)}
+            </div>
+
+          </div>
+
         </div>
 
-        <div class="completed">
+        <div class="history-xp">
           +${item.xp} XP
         </div>
 
       `;
 
-      box.appendChild(div);
+      list.appendChild(div);
 
     });
 
 }
 
-function showNotification(){
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message){
+
+  const toast=
+    document.getElementById("toast");
+
+  toast.textContent=message;
+
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+
+    toast.classList.remove("show");
+
+  },2500);
+
+}
+
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+function notify(){
 
   if(
     "Notification" in window &&
@@ -704,7 +1190,7 @@ function showNotification(){
   ){
 
     new Notification(
-      "Nieuwe Side Quest! ⚡",
+      "Nieuwe Side Quest ⚡",
       {
         body:state.currentQuest.title
       }
@@ -714,18 +1200,10 @@ function showNotification(){
 
 }
 
-function requestNotifications(){
 
-  if(
-    "Notification" in window &&
-    Notification.permission==="default"
-  ){
-
-    Notification.requestPermission();
-
-  }
-
-}
+/* =========================
+   HTML SAFETY
+========================= */
 
 function escapeHTML(value){
 
@@ -738,6 +1216,11 @@ function escapeHTML(value){
 
 }
 
+
+/* =========================
+   STARTUP
+========================= */
+
 load();
 
 updateStats();
@@ -749,7 +1232,17 @@ if(state.currentQuest){
 
 }
 
-requestNotifications();
+/*
+  Als de gebruiker eerder gestart was,
+  starten we de timer automatisch opnieuw
+  wanneer de pagina opnieuw wordt geopend.
+*/
+
+if(state.started){
+
+  startTimer();
+
+}
 
 </script>
 
